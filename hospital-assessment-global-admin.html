@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>چک لیست خودارزیابی بیمارستان بدون دخانیات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0f2438;
+    --ink-soft:#4c6483;
+    --bg:#eef4fb;
+    --card:#ffffff;
+    --line:#d3e2f0;
+    --clinical-900:#0b3358;
+    --clinical-700:#10578f;
+    --clinical-500:#1c84c7;
+    --pale:#e3eefa;
+    --hero-line:#6ec9ff;
+    --gold:#c98a2e;
+    --red:#c1473f;
+    --orange:#d98a35;
+    --yellow:#d8b23a;
+    --green:#3f9152;
+    --red-bg:#fbeae8;
+    --orange-bg:#fcf1e4;
+    --yellow-bg:#fbf5e2;
+    --green-bg:#e9f5eb;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(11,51,88,.06), 0 8px 24px -12px rgba(11,51,88,.16);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Vazirmatn',system-ui,sans-serif;
+    line-height:1.7;
+    padding-bottom:80px;
+  }
+  a{color:inherit;}
+
+  /* ---------- Header ---------- */
+  .hero{
+    background:linear-gradient(175deg, var(--clinical-900) 0%, #082744 100%);
+    color:#fff;
+    padding:38px 20px 108px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-inner{max-width:900px; margin:0 auto; position:relative; z-index:2;}
+  .ecg-trace{
+    position:absolute; left:0; right:0; bottom:0; height:74px;
+    display:block; opacity:.85;
+  }
+  .ecg-trace path{
+    fill:none; stroke:var(--hero-line); stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:900; stroke-dashoffset:900;
+    animation:ecgDraw 3.6s ease-in-out infinite;
+  }
+  .ecg-trace circle{ fill:var(--hero-line); animation:ecgPulse 3.6s ease-in-out infinite; }
+  @keyframes ecgDraw{
+    0%{stroke-dashoffset:900;}
+    55%{stroke-dashoffset:0;}
+    100%{stroke-dashoffset:-900;}
+  }
+  @keyframes ecgPulse{
+    0%,50%,100%{opacity:0;}
+    52%,54%{opacity:1;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ecg-trace path{ animation:none; stroke-dashoffset:0; }
+    .ecg-trace circle{ animation:none; opacity:0; }
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:12px; letter-spacing:.05em; font-weight:700;
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.28);
+    border-radius:6px 6px 6px 0;
+    padding:6px 13px;
+    color:#dcecfb;
+  }
+  .eyebrow::before{ content:"✚"; color:var(--hero-line); font-size:12px; }
+  .hero h1{
+    font-size:clamp(24px,4vw,34px);
+    font-weight:800;
+    margin:18px 0 8px;
+    letter-spacing:-.01em;
+  }
+  .hero p{
+    color:#bfd8ee; font-size:15px; max-width:640px; margin:0;
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{max-width:900px; margin:-72px auto 0; padding:0 20px; position:relative; z-index:2;}
+
+  .id-card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+    padding:22px;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:14px;
+  }
+  @media (max-width:680px){ .id-card{grid-template-columns:1fr;} }
+  .field label{
+    display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%; border:1px solid var(--line); border-radius:9px;
+    padding:10px 12px; font-family:inherit; font-size:14.5px; color:var(--ink);
+    background:#f7fafd;
+  }
+  .field input:focus{outline:2px solid var(--clinical-500); outline-offset:1px;}
+
+  /* ---------- Score dock ---------- */
+  .dock{
+    position:sticky; top:14px; z-index:20;
+    margin-top:18px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:16px 18px;
+    display:flex; align-items:center; gap:18px;
+  }
+  .gauge{flex:0 0 auto; position:relative; width:74px; height:74px; border-radius:50%; box-shadow:inset 0 0 0 3px var(--clinical-900), inset 0 0 0 5px #fff;}
+  .gauge svg{width:74px; height:74px; transform:rotate(-90deg);}
+  .gauge circle{fill:none; stroke-width:8;}
+  .gauge .track{stroke:#e3ecf5;}
+  .gauge .fill{stroke:var(--green); stroke-linecap:round; transition:stroke-dashoffset .45s ease, stroke .45s ease;}
+  .gauge .num{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-weight:800; font-size:16px; color:var(--ink);
+  }
+  .gauge .num small{font-weight:600; font-size:9.5px; color:var(--ink-soft); margin-top:-2px;}
+  .dock-mid{flex:1 1 auto; min-width:0;}
+  .dock-mid .band{
+    display:inline-flex; align-items:center; gap:6px;
+    font-weight:700; font-size:13.5px; padding:4px 11px; border-radius:999px;
+    margin-bottom:6px;
+  }
+  .dock-mid .progress-track{height:7px; border-radius:99px; background:#dfeaf5; overflow:hidden;}
+  .dock-mid .progress-fill{height:100%; border-radius:99px; background:var(--clinical-500); transition:width .3s ease;}
+  .dock-mid .answered{font-size:12px; color:var(--ink-soft); margin-top:6px;}
+  .dock-actions{display:flex; flex-direction:column; gap:8px; flex:0 0 auto;}
+  .btn{
+    border:none; cursor:pointer; font-family:inherit; font-weight:700; font-size:13px;
+    border-radius:9px; padding:9px 14px; white-space:nowrap;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--clinical-700); color:#fff;}
+  .btn-primary:hover{background:var(--clinical-900);}
+  .btn-ghost{background:#fff; color:var(--clinical-700); border:1px solid var(--line);}
+  .btn-ghost:hover{background:var(--pale);}
+  .btn-sm{padding:6px 10px; font-size:12px;}
+
+  /* ---------- Steps ---------- */
+  .steps{margin-top:26px; display:flex; flex-direction:column; gap:14px;}
+  .step{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .step-head{
+    display:flex; align-items:center; gap:14px; padding:16px 18px; cursor:pointer;
+    user-select:none;
+  }
+  .step-num{
+    flex:0 0 auto; width:38px; height:38px; border-radius:10px;
+    background:var(--pale); color:var(--clinical-900); font-weight:800; font-size:15px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step-titles{flex:1 1 auto; min-width:0;}
+  .step-titles .t-fa{font-weight:700; font-size:15.5px;}
+  .step-meta{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .step-score{
+    flex:0 0 auto; font-size:12.5px; font-weight:700; color:var(--clinical-700);
+    background:var(--pale); padding:4px 10px; border-radius:999px;
+  }
+  .chev{flex:0 0 auto; width:18px; height:18px; transition:transform .2s ease; color:var(--ink-soft);}
+  .step.open .chev{transform:rotate(180deg);}
+  .step-body{
+    max-height:0; overflow:hidden; transition:max-height .28s ease;
+    border-top:1px solid transparent;
+  }
+  .step.open .step-body{border-top-color:var(--line);}
+  .step-body-inner{padding:6px 18px 14px;}
+
+  .item{padding:14px 4px; border-bottom:1px dashed var(--line);}
+  .item:last-child{border-bottom:none;}
+  .item-row{display:flex; align-items:flex-start; gap:10px; justify-content:space-between; flex-wrap:wrap;}
+  .item-text{flex:1 1 320px; font-size:14.5px;}
+  .item-text .code{color:var(--clinical-700); font-weight:700; margin-left:6px;}
+  .item-text .req{color:var(--gold); font-weight:800; margin-right:2px;}
+  .item-eval{font-size:11.5px; color:var(--ink-soft); margin-top:5px;}
+  .item-eval::before{content:"روش ارزیابی: ";}
+
+  .crit-toggle{
+    margin-top:8px; display:inline-flex; align-items:center; gap:5px;
+    border:none; background:transparent; cursor:pointer; font-family:inherit;
+    font-size:11.5px; font-weight:700; color:var(--clinical-500); padding:2px 0;
+  }
+  .crit-toggle svg{width:13px; height:13px; transition:transform .2s ease;}
+  .crit-toggle.open svg{transform:rotate(180deg);}
+  .crit-toggle:hover{color:var(--clinical-700);}
+  .criteria-panel{
+  margin-top:12px;
+  padding:14px;
+  background:#f8fafc;
+  border:1px solid #dbe3ea;
+  border-radius:10px;
+  overflow:visible;
+  max-height:none;
+}
+  
+  .crit-row{
+    display:flex; align-items:flex-start; gap:8px; font-size:12px;
+    padding:6px 10px; border-radius:8px; margin-bottom:5px; line-height:1.6;
+  }
+  .crit-row:last-child{margin-bottom:0;}
+  .crit-tag{flex:0 0 auto; font-weight:800; padding:2px 8px; border-radius:999px; font-size:11px; white-space:nowrap;}
+  .crit-desc{flex:1 1 auto; color:var(--ink-soft);}
+  .crit-0{background:var(--red-bg);}
+  .crit-0 .crit-tag{background:var(--red); color:#fff;}
+  .crit-1{background:var(--orange-bg);}
+  .crit-1 .crit-tag{background:var(--orange); color:#fff;}
+  .crit-2{background:var(--green-bg);}
+  .crit-2 .crit-tag{background:var(--green); color:#fff;}
+
+  
+  .opts{flex:0 0 auto; display:flex; gap:6px; background:#f4f8f6; border:1px solid var(--line); border-radius:10px; padding:4px;}
+  .opt{
+    border:none; background:transparent; cursor:pointer; font-family:inherit;
+    font-size:12.5px; font-weight:700; padding:7px 10px; border-radius:7px; color:var(--ink-soft);
+  }
+  .opt[data-v="0"].sel{background:var(--red); color:#fff;}
+  .opt[data-v="1"].sel{background:var(--orange); color:#fff;}
+  .opt[data-v="2"].sel{background:var(--green); color:#fff;}
+
+  /* ---------- Legend / footer ---------- */
+  .legend{
+    margin-top:26px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:18px;
+  }
+  .legend h3{margin:0 0 12px; font-size:14.5px;}
+  .legend-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  @media (max-width:680px){.legend-grid{grid-template-columns:1fr 1fr;}}
+  .legend-item{border-radius:10px; padding:10px 12px; font-size:12.5px; font-weight:700;}
+  .legend-item span{display:block; font-size:11px; font-weight:600; opacity:.75; margin-top:2px;}
+
+  .saved-bar{
+    margin-top:16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    font-size:13px; color:var(--ink-soft);
+  }
+  select{
+    font-family:inherit; font-size:13px; border:1px solid var(--line); border-radius:8px; padding:7px 10px; background:#fff;
+  }
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(12px);
+    background:var(--clinical-900); color:#fff; padding:10px 18px; border-radius:10px; font-size:13.5px;
+    font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,.25); z-index:50;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media print{
+    .dock, .id-card .btn, .saved-bar, .hero{ box-shadow:none; }
+  }
+/* =========================================================
+   View tabs (added feature)
+   ========================================================= */
+.view-tabs{ display:flex; gap:8px; margin-top:20px; flex-wrap:wrap; }
+.view-tab{
+  border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.08); color:#dcecfb;
+  font-family:inherit; font-size:13px; font-weight:600; padding:9px 16px; border-radius:999px; cursor:pointer;
+}
+.view-tab.is-active{ background:#fff; color:var(--clinical-900); border-color:#fff; }
+
+/* =========================================================
+   Login / auth (added feature)
+   ========================================================= */
+.login-overlay{
+  position:fixed; inset:0; background:rgba(11,51,88,.6);
+  display:flex; align-items:center; justify-content:center; z-index:1000; padding:20px;
+}
+.login-card{
+  background:var(--card); border-radius:var(--radius); box-shadow:0 10px 30px rgba(11,51,88,.25);
+  padding:16px; width:100%; max-width:290px; border:1px solid var(--line);
+}
+.login-card h2{ margin:0 0 3px; font-size:14px; color:var(--clinical-900); }
+.login-sub{ margin:0 0 10px; font-size:11px; color:var(--ink-soft); }
+.login-field{ margin-bottom:8px; display:flex; flex-direction:column; gap:3px; }
+.login-field label{ font-size:11px; font-weight:600; color:var(--ink); }
+.login-field input, .login-field select{
+  font-family:inherit; font-size:12.5px; padding:6px 9px; border-radius:8px;
+  border:1.5px solid var(--line); background:#fff; color:var(--ink);
+}
+.login-error{
+  background:var(--red-bg); color:var(--red); border-radius:8px; padding:6px 9px;
+  font-size:11px; margin-bottom:8px;
+}
+.login-submit{ width:100%; justify-content:center; padding:8px; font-size:12.5px; }
+.login-tabs{ display:flex; gap:5px; margin-bottom:10px; background:var(--pale); border-radius:8px; padding:3px; }
+.login-tab{
+  flex:1; text-align:center; padding:5px; border-radius:6px; font-size:11px; font-weight:600;
+  color:var(--ink-soft); cursor:pointer; background:none; border:none; font-family:inherit;
+}
+.login-tab.is-active{ background:var(--clinical-700); color:#fff; }
+.login-note{
+  background:var(--pale); color:var(--clinical-700); border-radius:8px; padding:6px 9px;
+  font-size:10px; margin-bottom:8px; line-height:1.5;
+}
+.login-status-block{ text-align:center; padding:2px 0; }
+.login-status-icon{ font-size:28px; margin-bottom:6px; }
+.login-status-block p{ font-size:11.5px; color:var(--ink); line-height:1.6; margin:0 0 10px; }
+
+/* =========================================================
+   Header user info (added feature)
+   ========================================================= */
+.user-info-row{
+  max-width:900px; margin:14px auto 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  background:rgba(255,255,255,.12); border-radius:12px; padding:8px 14px; font-size:12.5px; color:#fff;
+}
+.role-badge{ padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:700; background:rgba(255,255,255,.22); }
+.user-info-row .btn{ padding:6px 12px; font-size:11.5px; }
+.user-info-row .u-logout{ margin-inline-start:auto; }
+
+/* =========================================================
+   Overlay / modal system (added feature)
+   ========================================================= */
+.overlay{
+  display:none; position:fixed; inset:0; background:rgba(11,51,88,.55);
+  align-items:center; justify-content:center; z-index:900; padding:20px;
+}
+.overlay.show{ display:flex; }
+.modal{
+  background:#fff; border-radius:var(--radius); box-shadow:0 10px 30px rgba(11,51,88,.25);
+  max-width:440px; width:100%; max-height:82vh; overflow:auto; padding:22px;
+}
+.modal h3{ margin:0 0 12px; font-size:15.5px; color:var(--clinical-900); }
+.modal-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+.modal-item{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:10px 12px; border:1px solid var(--line); border-radius:12px; font-size:12.5px;
+}
+.modal-item .load-btn{ color:var(--clinical-500); font-weight:700; cursor:pointer; }
+.modal-item button{ color:var(--red); font-size:13px; background:none; border:none; cursor:pointer; }
+.modal-empty{ color:var(--ink-soft); font-size:13px; text-align:center; padding:20px 0; }
+.modal-close{
+  width:100%; padding:10px; background:var(--clinical-700); color:#fff; border-radius:10px;
+  font-weight:700; border:none; cursor:pointer; font-family:inherit; font-size:13px;
+}
+
+.approval-item{
+  display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  padding:11px 0; border-top:1px solid var(--line);
+}
+.approval-item:first-child{ border-top:none; }
+.approval-item .ai-meta{ font-size:12px; color:var(--ink-soft); line-height:1.8; }
+.approval-item .ai-meta b{ color:var(--ink); font-size:13px; }
+.approval-item .ai-actions{ display:flex; gap:8px; flex-shrink:0; }
+.approval-item .ai-actions button{
+  padding:6px 13px; border-radius:9px; font-size:12px; font-weight:700; border:none; cursor:pointer; font-family:inherit;
+}
+.approval-item .ai-approve{ background:var(--green-bg); color:var(--green); }
+.approval-item .ai-reject{ background:var(--red-bg); color:var(--red); }
+
+/* =========================================================
+   Compare hospitals (added feature)
+   ========================================================= */
+.compare-picker{ display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.compare-picker-col{ display:flex; flex-direction:column; gap:5px; flex:1; min-width:180px; }
+.compare-picker-col label{ font-size:12px; color:var(--ink-soft); font-weight:600; }
+.compare-vs{ font-size:12px; font-weight:700; color:var(--ink-soft); padding:0 4px 9px; white-space:nowrap; }
+#compareStatus{ font-size:12.5px; color:var(--ink-soft); text-align:center; margin-bottom:14px; }
+#compareStatus.err{ color:var(--orange); }
+.compare-summary{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
+.compare-summary-card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);
+  padding:16px; text-align:center;
+}
+.compare-summary-card h3{ margin:0 0 4px; font-size:14.5px; color:var(--clinical-900); }
+.compare-summary-card .csc-meta{ font-size:11.5px; color:var(--ink-soft); margin-bottom:8px; }
+.compare-summary-card .csc-score{ font-size:28px; font-weight:800; color:var(--clinical-700); }
+.compare-summary-card .csc-max{ font-size:12px; color:var(--ink-soft); }
+.compare-summary-card .csc-band{ display:inline-block; margin-top:6px; padding:4px 11px; border-radius:999px; font-size:11.5px; font-weight:700; }
+.compare-winner{ text-align:center; font-size:13.5px; font-weight:700; color:var(--clinical-700); margin-bottom:16px; }
+.compare-step-row{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:9px; box-shadow:var(--shadow); }
+.compare-step-title{ font-size:12.5px; font-weight:700; margin-bottom:9px; }
+.cdb-line{ display:flex; align-items:center; gap:9px; margin-bottom:5px; }
+.cdb-label{ font-size:11px; color:var(--ink-soft); min-width:64px; white-space:nowrap; }
+.cdb-track{ flex:1; height:12px; background:var(--pale); border-radius:8px; overflow:hidden; border:1px solid var(--line); }
+.cdb-fill{ height:100%; border-radius:8px; }
+.cdb-fill.a{ background:var(--clinical-500); }
+.cdb-fill.b{ background:var(--gold); }
+.cdb-val{ font-size:11px; font-weight:700; min-width:48px; text-align:left; }
+.compare-empty{ text-align:center; padding:34px 20px; color:var(--ink-soft); font-size:13px; }
+
+/* =========================================================
+   Chart report (added feature)
+   ========================================================= */
+.report-picker-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:9px; }
+.report-picker-head h3{ margin:0; font-size:14px; color:var(--clinical-900); }
+.report-picker-actions{ display:flex; gap:7px; flex-wrap:wrap; }
+.report-picker-actions .btn{ padding:6px 11px; font-size:11.5px; }
+.report-city-list{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);
+  max-height:220px; overflow-y:auto; padding:6px 10px; margin-bottom:14px;
+}
+.report-city-item{ display:flex; align-items:center; gap:8px; padding:7px 4px; border-top:1px solid var(--line); font-size:12.5px; }
+.report-city-item:first-child{ border-top:none; }
+.report-city-item .rci-swatch{ width:11px; height:11px; border-radius:3px; flex:0 0 auto; }
+.report-city-item label{ flex:1; cursor:pointer; }
+.report-empty-list{ text-align:center; padding:16px; color:var(--ink-soft); font-size:12.5px; }
+#reportStatus{ font-size:12.5px; color:var(--ink-soft); text-align:center; margin-bottom:14px; }
+#reportStatus.err{ color:var(--orange); }
+.report-chart-card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; margin-bottom:16px; }
+.report-chart-card h4{ margin:0 0 10px; font-size:13px; color:var(--clinical-900); }
+.report-chart-card svg{ width:100%; height:auto; display:block; }
+.report-chart-card svg text{ font-family:'Vazirmatn',system-ui,sans-serif; }
+.report-legend{ display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:10px; justify-content:center; }
+.report-legend-item{ display:flex; align-items:center; gap:5px; font-size:11.5px; color:var(--ink-soft); }
+.report-legend-swatch{ width:10px; height:10px; border-radius:3px; flex:0 0 auto; }
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <svg class="ecg-trace" viewBox="0 0 900 100" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,50 L20,50 L28,42 L36,50 L50,50 L58,20 L66,80 L74,35 L82,50 L100,50 L110,45 L120,50 L150,50 L170,50 L178,42 L186,50 L200,50 L208,20 L216,80 L224,35 L232,50 L250,50 L260,45 L270,50 L300,50 L320,50 L328,42 L336,50 L350,50 L358,20 L366,80 L374,35 L382,50 L400,50 L410,45 L420,50 L450,50 L470,50 L478,42 L486,50 L500,50 L508,20 L516,80 L524,35 L532,50 L550,50 L560,45 L570,50 L600,50 L620,50 L628,42 L636,50 L650,50 L658,20 L666,80 L674,35 L682,50 L700,50 L710,45 L720,50 L750,50 L770,50 L778,42 L786,50 L800,50 L808,20 L816,80 L824,35 L832,50 L850,50 L860,45 L870,50 L900,50"/>
+    <circle cx="66" cy="80" r="3"/>
+  </svg>
+  <div class="hero-inner">
+    <span class="eyebrow">۹ گام برای بیمارستان بدون دخانیات</span>
+    <h1>چک‌لیست خودارزیابی بیمارستان بدون دخانیات</h1>
+    <p>بر اساس «راهنمای پیاده‌سازی بیمارستان بدون دخانیات» — جمعیت مبارزه با استعمال دخانیات ایران. ۳۷ شاخص را برای بیمارستان خود تکمیل کنید تا امتیاز و وضعیت عملکرد به‌صورت زنده محاسبه شود.</p>
+    <div class="view-tabs" role="tablist">
+      <button type="button" class="view-tab is-active" id="tabAssessBtn" role="tab" aria-selected="true" data-min-level="1">تکمیل ارزیابی</button>
+      <button type="button" class="view-tab" id="tabCompareBtn" role="tab" aria-selected="false" data-min-level="2">مقایسه بیمارستان‌ها</button>
+      <button type="button" class="view-tab" id="tabReportBtn" role="tab" aria-selected="false" data-min-level="3">گزارش نموداری</button>
+    </div>
+    <div class="user-info-row" id="userInfoRow" style="display:none">
+      <span id="userInfoText"></span>
+      <span class="role-badge" id="userRoleBadge"></span>
+      <button class="btn btn-ghost" id="backToPortalBtn" type="button">بازگشت به پنل</button>
+      <button class="btn btn-ghost u-logout" id="logoutBtn" type="button">خروج</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="assessmentView">
+
+  <div class="id-card">
+    <div class="field">
+      <label for="hospName">نام بیمارستان</label>
+      <input id="hospName" type="text" placeholder="مثلاً بیمارستان امام رضا (ع)">
+    </div>
+    <div class="field">
+      <label for="evalName">نام و نام خانوادگی ارزیاب</label>
+      <input id="evalName" type="text" placeholder="نام ارزیاب">
+    </div>
+    <div class="field">
+      <label for="evalDate">تاریخ ارزیابی</label>
+      <input id="evalDate" type="text" readonly>
+    </div>
+  </div>
+
+  <div class="dock">
+    <div class="gauge">
+      <svg viewBox="0 0 74 74">
+        <circle class="track" cx="37" cy="37" r="31"></circle>
+        <circle class="fill" id="gaugeFill" cx="37" cy="37" r="31" stroke-dasharray="194.8" stroke-dashoffset="194.8"></circle>
+      </svg>
+      <div class="num"><span id="scoreNum">0</span><small id="scoreMax"></small></div>
+    </div>
+    <div class="dock-mid">
+      <div class="band" id="bandTag" style="background:var(--red-bg); color:var(--red);">عملکرد ضعیف (قرمز)</div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="answered" id="answeredText">۰ از ۳۷ شاخص پاسخ داده شده</div>
+    </div>
+    <div class="dock-actions">
+      <button class="btn btn-primary" id="saveBtn">ذخیرهٔ ارزیابی</button>
+      <button class="btn btn-ghost" id="resetBtn">پاک‌کردن پاسخ‌ها</button>
+    </div>
+  </div>
+
+  <div class="saved-bar">
+    <button class="btn btn-ghost btn-sm" id="loadBtn">📂 بازکردن ارزیابی</button>
+    <button class="btn btn-ghost btn-sm" id="printBtn">چاپ / PDF</button>
+    <button class="btn btn-ghost btn-sm" id="uploadPlanBtn" data-min-level="2" style="display:none">📎 آپلود فایل برنامه‌های عملیاتی</button>
+    <button class="btn btn-ghost btn-sm" id="viewPlansBtn" data-min-level="2" style="display:none">📂 فایل‌های آپلودشده</button>
+    <button class="btn btn-ghost btn-sm" id="exportCsvBtn" data-min-level="2" style="display:none">⬇️ خروجی CSV</button>
+    <input type="file" id="uploadPlanFileInput" accept="application/pdf" style="display:none">
+  </div>
+
+  <div class="steps" id="stepsContainer"></div>
+
+  <div class="legend">
+    <h3>راهنمای امتیاز کسب‌شده</h3>
+    <div class="legend-grid">
+      <div class="legend-item" style="background:var(--red-bg); color:var(--red);">۱۸–۰<span>عملکرد ضعیف (قرمز)</span></div>
+      <div class="legend-item" style="background:var(--orange-bg); color:var(--orange);">۳۷–۱۹<span>کمتر از حد انتظار (نارنجی)</span></div>
+      <div class="legend-item" style="background:var(--yellow-bg); color:var(--yellow);">۵۵–۳۸<span>قابل‌قبول (زرد)</span></div>
+      <div class="legend-item" style="background:var(--green-bg); color:var(--green);">۷۴–۵۶<span>مطلوب (سبز)</span></div>
+    </div>
+    <p style="font-size:12px; color:var(--ink-soft); margin:12px 0 0;">علامت <span class="req">★</span> به‌معنای شاخص الزامی است. بیمارستان‌هایی که رنگ سبز را کسب می‌کنند می‌توانند آمادگی خود را برای بازدید تیم ارزیابی بیرونی و دریافت گواهی‌نامهٔ بیمارستان بدون دخانیات اعلام کنند.</p>
+  </div>
+
+</div>
+
+<div class="wrap" id="compareView" style="display:none">
+  <div class="compare-picker">
+    <div class="compare-picker-col">
+      <label>بیمارستان اول</label>
+      <select id="compareSelectA"><option value="">— انتخاب ارزیابی —</option></select>
+    </div>
+    <div class="compare-vs">در برابر</div>
+    <div class="compare-picker-col">
+      <label>بیمارستان دوم</label>
+      <select id="compareSelectB"><option value="">— انتخاب ارزیابی —</option></select>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="compareRefreshBtn" type="button">🔄 به‌روزرسانی فهرست</button>
+  </div>
+  <div id="compareStatus">در حال بارگذاری ارزیابی‌های موجود…</div>
+  <div id="compareResults"></div>
+</div>
+
+<div class="wrap" id="reportView" style="display:none">
+  <div class="report-picker-head">
+    <h3>بیمارستان‌های موردنظر برای گزارش نموداری را انتخاب کنید</h3>
+    <div class="report-picker-actions">
+      <button class="btn btn-ghost btn-sm" id="reportSelectAllBtn" type="button">انتخاب همه</button>
+      <button class="btn btn-ghost btn-sm" id="reportClearBtn" type="button">پاک‌کردن انتخاب</button>
+      <button class="btn btn-ghost btn-sm" id="reportRefreshBtn" type="button">🔄 به‌روزرسانی فهرست</button>
+    </div>
+  </div>
+  <div id="reportCityList" class="report-city-list"></div>
+  <div id="reportStatus">در حال بارگذاری ارزیابی‌های موجود…</div>
+  <div id="reportChartArea"></div>
+</div>
+
+<div class="overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>📂 ارزیابی‌های ذخیره‌شده</h3>
+    <div id="modalList" class="modal-list"></div>
+    <button class="modal-close" id="modalCloseBtn">بستن</button>
+  </div>
+</div>
+
+<div class="overlay" id="plansModalOverlay">
+  <div class="modal">
+    <h3>📂 فایل‌های برنامه‌های عملیاتی</h3>
+    <button class="btn btn-ghost" id="plansBackBtn" type="button" style="display:none;margin-bottom:10px;width:100%;">→ بازگشت به فهرست بیمارستان‌ها</button>
+    <div id="plansList" class="modal-list"></div>
+    <button class="modal-close" id="plansModalCloseBtn">بستن</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const DATA = [
+  { step:1, title:"حمایت همه‌جانبه و راهبری", items:[
+    {
+    code:"1-1",
+    req:true,
+    text:'"سیاست بدون دخانیات" در هیئت رئیسه بیمارستان تصویب شده است؟',
+    eval:"مشاهده، مستندات",
+    crit:{
+        0:"هیچ سند، مصوبه یا صورتجلسه‌ای دال بر طرح و تصویب سیاست بدون دخانیات در هیئت‌رئیسه بیمارستان وجود ندارد.",
+        1:"موضوع سیاست بدون دخانیات در هیئت‌رئیسه مطرح شده یا پیش‌نویس/مصوبه ناقص وجود دارد، لیکن تصویب نهایی، امضای رسمی یا ابلاغ آن انجام نشده است.",
+        2:"سیاست بدون دخانیات به‌صورت رسمی در هیئت‌رئیسه بیمارستان تصویب شده و مستندات آن شامل مصوبه، صورتجلسه و/یا ابلاغ رسمی موجود است."
+    }
+},
+{code:"2-1", req:false, text:"کمیتهٔ اجرایی بیمارستان بدون دخانیات تشکیل گردیده و ابلاغ اعضای کمیته صادر شده است؟", eval:"مشاهدهٔ مستندات", crit:{
+0:"هیچ کمیته‌ای در این زمینه تشکیل نشده و ابلاغی برای اعضا وجود ندارد.",
+1:"کمیته به‌صورت محدود یا غیررسمی تشکیل شده، اما ابلاغ اعضا ناقص است یا برای همه اعضا صادر نشده است.",
+2:"کمیتهٔ اجرایی بیمارستان بدون دخانیات به‌صورت رسمی تشکیل شده و ابلاغ تمامی اعضا با مستندات معتبر صادر شده است."
+}},
+{code:"3-1", req:false, text:"یک فرد در بیمارستان به‌عنوان مسئول پیگیری امور مربوط به سیاست بدون دخانیات معین شده است؟", eval:"مشاهدهٔ مستندات", crit:{
+0:"فرد مسئول مشخص نشده است.",
+1:"فردی به‌صورت غیررسمی پیگیری می‌کند، اما ابلاغ یا شرح وظایف ندارد.",
+2:"مسئول مشخص با ابلاغ رسمی و شرح وظایف معین شده است."
+}},
+    {code:"4-1", req:false, text:"کمیتهٔ سیاست بدون دخانیات به‌طور منظم ماهیانه تشکیل جلسه داده و پیشرفت برنامه در آن ارزیابی می‌شود؟", eval:"مصاحبه و مشاهدهٔ مستندات", crit:{
+0:"جلسه‌ای برگزار نمی‌شود یا مستندی از جلسات وجود ندارد.",
+1:"جلسات نامنظم یا غیرماهیانه برگزار شده و ارزیابی پیشرفت برنامه کامل نیست.",
+2:"جلسات حداقل ماهی یک‌بار به‌صورت منظم برگزار شده و پیشرفت برنامه در صورتجلسات ثبت و مستند شده است."
+}},
+    {code:"5-1", req:false, text:"در بیمارستان برنامهٔ عملیاتی تدوین شده است؟", eval:"مشاهدهٔ مستندات", crit:{
+0:"هیچ برنامهٔ عملیاتی در زمینهٔ بیمارستان بدون دخانیات تدوین نشده است.",
+1:"برنامه‌ای کلی یا ناقص وجود دارد، اما فاقد اجزای اصلی مانند زمان‌بندی، مسئول اجرا یا شاخص ارزیابی است.",
+2:"برنامهٔ عملیاتی جامع، مستند و مصوب با تعیین فعالیت‌ها، زمان‌بندی، مسئول اجرا و شاخص‌های ارزیابی تدوین و قابل ارائه است."
+}},
+  
+  
+  ]},
+  { step:2, title:"ارزیابی وضعیت موجود", items:[
+    {
+    code:"1-2",
+    req:false,
+    text:"آیا بیمارستان دارای یک مصوبه یا سیاست مکتوب، مصوب و ابلاغ‌شده در زمینه «ممنوعیت کامل و پیشگیری از مصرف انواع دخانیات» است؟",
+    eval:"مشاهدهٔ مستندات",
+    crit:{
+        0:"هیچ سیاست یا سند مکتوبی در این خصوص وجود ندارد.",
+        1:"سند یا سیاستی وجود دارد، اما یا به تصویب نرسیده، یا ابلاغ نشده، یا همه انواع دخانیات را به‌طور صریح پوشش نمی‌دهد.",
+        2:"سیاستی مکتوب، مصوب و ابلاغ‌شده وجود دارد که ممنوعیت کامل و پیشگیری از مصرف همه انواع دخانیات را به‌طور صریح بیان می‌کند."
+    }
+},
+    {
+    code:"2-2",
+    req:false,
+    text:"آیا ارزیابی وضعیت مصرف دخانیات در بین کارکنان و پزشکان انجام شده است؟",
+    eval:"مشاهدهٔ مستندات",
+    crit:{
+        0:"هیچ ارزیابی، پیمایش یا ثبت اطلاعاتی در این خصوص انجام نشده است.",
+        1:"ارزیابی به‌صورت محدود، موردی، ناقص یا غیر به‌روز انجام شده است.",
+        2:"ارزیابی نظام‌مند، مستند و نسبتاً به‌روز درباره وضعیت مصرف دخانیات در بین کارکنان و پزشکان انجام شده است."
+    }
+},
+    {
+    code:"3-2",
+    req:false,
+    text:"آیا نقشه یا فهرست جامعی از نقاط بحرانی و پرخطر استعمال دخانیات (اعم از فضاهای مسقف، بخش‌های نیمه‌باز، مشاعات، پارکینگ‌ها و فضاهای سبز محوطه بیمارستان) تهیه و مستند شده است؟",
+    eval:"مشاهدهٔ مستندات",
+    crit:{
+        0:"هیچ نقشه، فهرست یا مستند مشخصی از نقاط بحرانی وجود ندارد.",
+        1:"برخی نقاط پرخطر شناسایی شده‌اند، اما فهرست یا نقشه جامع، نظام‌مند و مستند تهیه نشده است.",
+        2:"نقشه یا فهرست جامع، دقیق و مستند از کلیه نقاط بحرانی و پرخطر استعمال دخانیات در فضاهای مختلف بیمارستان تهیه شده است."
+    }
+},
+    {
+    code:"4-2",
+    req:false,
+    text:"آیا در متن قراردادهای فعال با پیمانکاران بیمارستان (نظیر خدمات، تغذیه، امنیت و تأسیسات)، بند حقوقی صریح مبنی بر «تعهد به رعایت کامل سیاست بیمارستان بدون دخانیات توسط پرسنل پیمانکار» گنجانده شده است؟",
+    eval:"مشاهدهٔ مستندات",
+    crit:{
+        0:"هیچ بندی در این خصوص در قراردادهای پیمانکاران درج نشده است.",
+        1:"این بند فقط در برخی قراردادها آمده یا متن آن کلی، مبهم و فاقد ضمانت اجرایی است.",
+        2:"در تمامی قراردادهای فعال پیمانکاران، بند حقوقی روشن، صریح و الزام‌آور درباره رعایت کامل سیاست بیمارستان بدون دخانیات درج شده است."
+    }
+},
+  
+  
+  ]},
+  { step:3, title:"اطلاع رسانی", items:[
+    {code:"1-3", req:true, text:"ممنوعیت استعمال دخانیات در بیمارستان از طریق اتوماسیون به همه بخش‌ها / واحدها ابلاغ گردیده است؟", eval:"مشاهده، مصاحبه، مستندات", crit:{
+0:"هیچ ابلاغ رسمی از طریق اتوماسیون یا مکاتبه داخلی انجام نشده است.",
+1:"ابلاغ به برخی واحدها انجام شده یا مستندات آن ناقص است.",
+2:"ممنوعیت استعمال دخانیات به‌صورت رسمی و مستند از طریق اتوماسیون یا مکاتبه داخلی به همه بخش‌ها و واحدها ابلاغ شده است."
+}},
+
+{code:"2-3", req:true, text:"جهت اطلاع مراجعین، بیماران و همراهان آنها، به تعداد فضاهای کلیدی منتخب؛ پوستر، تابلو، بنر و وسایل صوتی تصویری و... در فضاهای باز و بسته بیمارستان نصب گردیده است؟", eval:"مشاهده", crit:{
+0:"هیچ ابزار اطلاع‌رسانی نصب نشده یا موارد نصب‌شده بسیار محدود و غیرمؤثر است.",
+1:"اطلاع‌رسانی در برخی فضاها انجام شده، اما تعداد، پراکندگی یا محل نصب آن کافی نیست.",
+2:"ابزارهای اطلاع‌رسانی مناسب و قابل رؤیت در تعداد کافی در فضاهای کلیدی باز و بسته بیمارستان نصب و استفاده شده‌اند."
+}},
+
+{code:"3-3", req:true, text:"در صفحات فضای مجازی بیمارستان (سایت و سایر پلتفرم‌ها) اطلاع‌رسانی مناسب در خصوص بیمارستان بدون دخانیات انجام شده است؟", eval:"مشاهده", crit:{
+0:"هیچگونه اطلاع‌رسانی در صفحات رسمی بیمارستان انجام نشده است.",
+1:"اطلاع‌رسانی محدود، پراکنده یا غیرمستمر انجام شده است.",
+2:"اطلاع‌رسانی مناسب، روشن، مستمر و قابل مشاهده در سایت و/یا سایر پلتفرم‌های رسمی بیمارستان انجام شده است."
+}},
+
+{code:"4-3", req:false, text:"ممنوعیت استعمال دخانیات در کانال‌های ارتباطی دنیای مجازی بیمارستان اطلاع‌رسانی شده است؟", eval:"مشاهده", crit:{
+0:"هیچ پیام یا اطلاعیه‌ای در این کانال‌ها منتشر نشده است.",
+1:"اطلاع‌رسانی به‌صورت موردی، محدود یا نامنظم انجام شده است.",
+2:"اطلاع‌رسانی درباره ممنوعیت استعمال دخانیات به‌صورت روشن و مستمر در کانال‌های ارتباطی مجازی بیمارستان انجام شده است."
+}},
+
+{code:"5-3", req:true, text:"در تمامی محوطه‌های بسته بیمارستان (راهروها، اتاق بیماران، ادارات و پاویون‌ها) علائم ممنوعیت مصرف دخانیات در معرض دید عموم نصب شده‌اند؟", eval:"مشاهده", crit:{
+0:"علائم وجود ندارد یا در اغلب فضاهای بسته نصب نشده است.",
+1:"علائم در برخی راهروها، اتاق‌ها یا فضاهای بسته نصب شده، اما پوشش کامل و کافی ندارد.",
+2:"علائم ممنوعیت مصرف دخانیات در تمامی یا قریب به اتفاق محوطه‌های بسته بیمارستان به‌طور واضح و در معرض دید عموم نصب شده‌اند."
+}},
+
+{code:"6-3", req:true, text:"در تمامی فضاهای باز بیمارستان (حیاط‌ها، فضای سبز، پارکینگ‌های روباز) علائم ممنوعیت مصرف دخانیات در معرض دید عموم نصب شده‌اند؟", eval:"مشاهده", crit:{
+0:"علائمی در فضاهای باز وجود ندارد یا بسیار محدود است.",
+1:"علائم در بخشی از فضاهای باز نصب شده، اما همه نقاط اصلی را پوشش نمی‌دهد.",
+2:"علائم ممنوعیت مصرف دخانیات در تمامی یا تقریباً تمامی فضاهای باز اصلی بیمارستان به‌صورت واضح نصب شده‌اند."
+}},
+  
+  
+  ]},
+  { step:4, title:"جلب مشارکت همگانی", items:[
+   // {code:"1-4", req:false, text:"تمامی مصرف‌کنندگان دخانیات در فرایند معاینات شغلی کارکنان بیمارستان شناسایی شده‌اند؟", eval:"مشاهدهٔ مستندات", crit:{0:"وضعیت مصرف دخانیات در معاینات شغلی بررسی نمی‌شود.",1:"بررسی فقط برای بخشی از کارکنان یا به‌صورت غیرمنظم انجام می‌شود.",2:"وضعیت مصرف دخانیات برای همه کارکنان به‌صورت نظام‌مند ثبت می‌شود."}},
+    {code:"1-4", req:false, text:"حمایت‌طلبی از رئیس/معاونت‌های دانشگاه در جهت پذیرش و اجرای سیاست بیمارستان بدون دخانیات صورت گرفته است؟", eval:"مشاهده، مستندات", crit:{
+0:"هیچ پیگیری، مکاتبه یا مستندی در این خصوص وجود ندارد.",
+1:"پیگیری محدود یا مقطعی انجام شده، اما نظام‌مند و مؤثر نبوده است.",
+2:"حمایت‌طلبی از طریق مکاتبات، جلسات یا پیگیری‌های رسمی و مستند به‌صورت مناسب انجام شده است."
+}},
+
+{code:"2-4", req:false, text:"مشارکت شهرداری، مرکز بهداشت و سازمان‌های مردم‌نهاد در پیاده‌سازی سیاست بدون دخانیات جلب شده است؟", eval:"مشاهده، مصاحبه، مستندات", crit:{
+0:"هیچ مشارکت یا همکاری بیرونی برقرار نشده است.",
+1:"ارتباط یا همکاری اولیه و محدود برقرار شده، اما به اقدام اجرایی مؤثر نینجامیده است.",
+2:"مشارکت مستند و مؤثر دست‌کم یکی از نهادهای بیرونی در حمایت یا اجرای برنامه جلب شده است."
+}},  
+  
+  
+  
+  ]},
+  { step:5, title:"شناسایی مصرف کنندگان محصولات دخانی و حمایت از ترک دخانیات", items:[
+    {code:"1-5", req:false, text:"تمامی مصرف‌کنندگان دخانیات در فرایند معاینات شغلی کارکنان بیمارستان شناسایی شده‌اند؟", eval:"مشاهده، مستندات", crit:{
+0:"وضعیت مصرف دخانیات در معاینات شغلی بررسی یا ثبت نمی‌شود.",
+1:"بررسی فقط برای بخشی از کارکنان یا به‌صورت غیرمنظم انجام می‌شود.",
+2:"وضعیت مصرف دخانیات برای همه کارکنان به‌صورت نظام‌مند ثبت می‌شود."
+}},
+
+{code:"2-5", req:true, text:"دسترسی به خدمات ترک دخانیات در بیمارستان پیش‌بینی شده است؟", eval:"مشاهده حضوری", crit:{
+0:"هیچ خدمت یا مسیر ارجاعی پیش‌بینی نشده است.",
+1:"دسترسی محدود، غیررسمی یا ناقص وجود دارد.",
+2:"خدمت یا مسیر ارجاع مشخص و قابل دسترس برای ترک دخانیات فراهم شده است."
+}},
+
+{code:"3-5", req:false, text:"اطلاع‌رسانی در خصوص خدمات ترک دخانیات در بیمارستان پیش‌بینی شده است؟", eval:"مشاهده، مستندات", crit:{
+0:"اطلاع‌رسانی انجام نشده است.",
+1:"اطلاع‌رسانی محدود یا ناپیوسته انجام شده است.",
+2:"اطلاع‌رسانی روشن، مستمر و قابل مشاهده درباره خدمات ترک وجود دارد."
+}},
+
+{code:"4-5", req:true, text:"ارائه مشاوره ۵ دقیقه‌ای بیمارستان، مراجعین مصرف‌کننده دخانیات را به ترک دخانیات دعوت می‌کند؟", eval:"مصاحبه", crit:{
+0:"چنین مشاوره‌ای انجام نمی‌شود.",
+1:"مشاوره به‌صورت موردی یا توسط برخی افراد انجام می‌شود.",
+2:"مشاوره کوتاه ترک دخانیات به‌صورت روتین و مستند ارائه می‌شود."
+}},
+  
+  ]},
+  { step:6, title:"آموزش", items:[
+    {code:"1-6", req:true, text:"همه کارکنان دوره آموزشی پیامدهای نامطلوب دخانیات را گذرانده و گواهی آن را دریافت کرده‌اند؟", eval:"مشاهده، مستندات", crit:{
+0:"آموزش برگزار نشده یا مستندی از آن وجود ندارد.",
+1:"آموزش برای بخشی از کارکنان انجام شده یا مستندات ناقص است.",
+2:"آموزش برای همه یا تقریباً همه کارکنان انجام شده و گواهی/مستندات موجود است."
+}},
+
+{code:"2-6", req:false, text:"همه کارکنان، از سیاست بیمارستان بدون دخانیات اطلاع کافی دارند؟", eval:"مصاحبه", crit:{
+0:"اکثر کارکنان از سیاست بدون دخانیات اطلاع ندارند.",
+1:"بخشی از کارکنان آگاه هستند، اما آگاهی همگانی و کافی نیست.",
+2:"کارکنان به‌طور کلی از مفاد سیاست و الزامات آن اطلاع کافی دارند."
+}},
+  
+  ]},
+  { step:7, title:"ایجاد محیط بدون دخانیات", items:[
+    {code:"1-7", req:true, text:"بیمارستان تا فاصله 100 متری برای عدم فروش دخانیات، مشارکت دکه‌ها و فروشگاه‌های اطراف را جلب کرده است و در آنها دخانیات فروخته نمی‌شود؟", eval:"مشاهده", crit:{
+0:"اقدام یا شواهدی از جلب مشارکت وجود ندارد.",
+1:"رایزنی یا همکاری محدود انجام شده، اما پوشش کامل ندارد.",
+2:"مشارکت مؤثر جلب شده و فروش دخانیات در محدوده موردنظر مشاهده نمی‌شود یا مستندات همکاری موجود است."
+}},
+
+{code:"2-7", req:false, text:"همه کارکنان درمانی و غیر درمانی تعهدنامه سیاست بدون دخانیات را امضاء کرده‌اند و در پرونده پرسنلی آنها نگهداری می‌شود؟", eval:"مشاهده، مصاحبه، مستندات", crit:{
+0:"تعهدنامه اخذ نشده یا مستندی وجود ندارد.",
+1:"تعهدنامه از بخشی از کارکنان اخذ شده یا نگهداری ناقص است.",
+2:"تعهدنامه از همه کارکنان اخذ شده و در پرونده پرسنلی نگهداری می‌شود."
+}},
+
+{code:"3-7", req:false, text:"دانشجویان و کارآموزان، در ابتدای ورود به بیمارستان در خصوص ممنوعیت استعمال دخانیات آگاه شده و تعهدنامه کتبی مبنی بر رعایت آن را امضاء کرده‌اند؟", eval:"مشاهده، مصاحبه، مستندات", crit:{
+0:"سازوکار مشخصی برای آگاه‌سازی و اخذ تعهد وجود ندارد.",
+1:"اجرا برای بخشی از دانشجویان/کارآموزان انجام شده یا مستندات ناقص است.",
+2:"در بدو ورود، آموزش و اخذ تعهد کتبی برای همه یا تقریباً همه انجام می‌شود."
+}},
+
+{code:"4-7", req:false, text:"در تمامی قراردادهای شرکت‌های پیمانکار یک بند به‌عنوان رعایت سیاست بدون دخانیات درج شده است؟", eval:"مشاهده، مصاحبه، مستندات", crit:{
+0:"چنین بندی در قراردادها وجود ندارد.",
+1:"فقط در برخی قراردادها درج شده یا متن آن ناقص است.",
+2:"در همه یا تقریباً همه قراردادهای پیمانکاران، بند مشخص و الزام‌آور درج شده است."
+}},
+
+{code:"5-7", req:true, text:"کلیه ادوات و وسایل استعمال دخانیات مانند جاسیگاری، قلیان و ... در کلیه قسمت‌های بیمارستان جمع‌آوری شده است؟", eval:"مشاهده", crit:{
+0:"این وسایل در بخش‌ها مشاهده می‌شود.",
+1:"بخشی از وسایل جمع‌آوری شده، اما هنوز در برخی نقاط وجود دارد.",
+2:"وسایل مرتبط از تمامی یا تقریباً تمامی بخش‌ها جمع‌آوری شده و مشاهده نمی‌شود."
+}},
+
+{code:"6-7", req:false, text:"بیمارستان با کارکنان مصرف‌کننده دخانیات مطابق آیین‌نامه انضباطی برخورد می‌کند؟", eval:"مشاهده، مصاحبه، مستندات", crit:{
+0:"هیچ اقدام انضباطی یا مستند مرتبط وجود ندارد.",
+1:"برخورد موردی، نامنظم یا ناقص انجام می‌شود.",
+2:"برخورد مطابق آیین‌نامه و به‌صورت مستند انجام می‌شود."
+}},
+
+{code:"7-7", req:false, text:"بیمارستان، کارکنان مصرف‌کننده دخانیات را که ترک کرده‌اند، مطابق آیین‌نامه انضباطی تشویق می‌کند؟", eval:"مشاهده، مصاحبه", crit:{
+0:"هیچ سازوکار تشویقی وجود ندارد.",
+1:"تشویق موردی یا غیررسمی انجام می‌شود.",
+2:"سازوکار تشویقی مشخص، مستند و اجرایی وجود دارد."
+}},
+
+{code:"8-7", req:false, text:"بیمارستان با مراجعین مصرف‌کننده دخانیات مطابق آیین‌نامه انضباطی به نحوی برخورد می‌کند که مصرف آن را متوقف کنند؟", eval:"مشاهده، مصاحبه", crit:{
+0:"هیچ مداخله‌ای انجام نمی‌شود.",
+1:"تذکر یا مداخله به‌صورت موردی و غیرنظام‌مند انجام می‌شود.",
+2:"برخورد و مداخله طبق رویه مشخص و مؤثر انجام می‌شود تا مصرف متوقف گردد."
+}},  
+  
+  
+  ]},
+  { step:8, title:"پایش و ارزشیابی", items:[
+    {code:"1-8", req:true, text:"از تمامی فضاهای باز و بسته بیمارستان شامل نقاط بحرانی روزانه بازدید می‌شود؟", eval:"مشاهده، مستندات", crit:{
+0:"بازدید روزانه انجام نمی‌شود.",
+1:"بازدیدها محدود، نامنظم یا فقط از برخی نقاط است.",
+2:"بازدید روزانه از فضاهای باز، بسته و نقاط بحرانی طبق برنامه انجام می‌شود."
+}},
+
+{code:"2-8", req:true, text:"آیا وضعیت مصرف دخانیات توسط کارکنان، مراجعین و بیماران روزانه رصد می‌شود؟", eval:"مشاهده، مستندات", crit:{
+0:"رصد روزانه انجام نمی‌شود.",
+1:"رصد به‌صورت غیرمنظم یا ناقص انجام می‌شود.",
+2:"رصد روزانه و نظام‌مند انجام و ثبت می‌شود."
+}},
+
+{code:"3-8", req:false, text:"آیا تعداد ته‌سیگار در نقاط تعیین‌شده در سطح بیمارستان به‌صورت هفتگی شمارش و ثبت می‌شود؟", eval:"مشاهده، مستندات", crit:{
+0:"شمارش و ثبت هفتگی انجام نمی‌شود.",
+1:"شمارش انجام می‌شود اما ثبت ناقص یا غیرمنظم است.",
+2:"شمارش و ثبت هفتگی به‌صورت منظم و مستند انجام می‌شود."
+}},
+
+{code:"4-8", req:true, text:"چک‌لیست به‌صورت ماهیانه تنظیم و روند آن در کمیته مطرح می‌شود؟", eval:"مشاهده، مستندات", crit:{
+0:"چک‌لیست ماهیانه تنظیم نمی‌شود یا در کمیته مطرح نمی‌گردد.",
+1:"تنظیم یا طرح موضوع به‌صورت نامنظم انجام می‌شود.",
+2:"چک‌لیست ماهیانه تنظیم و روند آن به‌صورت مستند در کمیته بررسی می‌شود."
+}},
+]},
+{ step:9, title:"پایداری و بهبود مستمر", items:[
+  {code:"1-9", req:false, text:"جلسات کمیته بدون دخانیات پس از استقرار بیمارستان بدون دخانیات به‌طور منظم به‌صورت فصلی برگزار می‌شود؟", eval:"مشاهده، مستندات", crit:{
+0:"جلسات فصلی برگزار نمی‌شود یا هیچ مستندی از آن وجود ندارد.",
+1:"جلسات به‌صورت پراکنده یا بدون نظم فصلی مشخص برگزار می‌شود.",
+2:"جلسات کمیته پس از استقرار برنامه، به‌صورت منظم فصلی برگزار شده و مستندات آن موجود است."
+}},
+
+{code:"2-9", req:false, text:"برای پایدار ماندن سیاست بیمارستان بدون دخانیات، سالانه بودجه مشخصی برای آن در نظر گرفته شده است؟", eval:"مشاهده، مستندات", crit:{
+0:"هیچ بودجه مشخصی برای این برنامه در نظر گرفته نشده است.",
+1:"حمایت مالی محدود، موردی یا غیرمصوب وجود دارد، اما ردیف مشخص بودجه‌ای تعریف نشده است.",
+2:"بودجه سالانه مشخص، مصوب و قابل استناد برای تداوم اجرای سیاست بیمارستان بدون دخانیات در نظر گرفته شده است."
+}},
+   
+  ]},
+  
+  
+];
+
+const TOTAL_ITEMS = DATA.reduce((s,g)=>s+g.items.length,0);
+const MAX_SCORE = TOTAL_ITEMS * 2;
+const answers = {}; // code -> 0/1/2
+
+const stepsContainer = document.getElementById('stepsContainer');
+
+function faDigits(n){
+  const map = {0:'۰',1:'۱',2:'۲',3:'۳',4:'۴',5:'۵',6:'۶',7:'۷',8:'۸',9:'۹'};
+  return String(n).replace(/[0-9]/g, d => map[d]);
+}
+
+function stepMaxScore(group){ return group.items.length * 2; }
+function stepScore(group){
+  return group.items.reduce((s,it)=> s + (answers[it.code] !== undefined ? answers[it.code] : 0), 0);
+}
+
+function render(){
+  stepsContainer.innerHTML = '';
+  DATA.forEach((group, gi) => {
+    const stepEl = document.createElement('div');
+    stepEl.className = 'step' + (gi === 0 ? ' open' : '');
+    stepEl.innerHTML = `
+      <div class="step-head" data-idx="${gi}">
+        <div class="step-num">${faDigits(group.step)}</div>
+        <div class="step-titles">
+          <div class="t-fa">گام ${faDigits(group.step)}: ${group.title}</div>
+          <div class="step-meta">${faDigits(group.items.length)} شاخص</div>
+        </div>
+        <div class="step-score" id="stepScore-${gi}">۰ / ${faDigits(stepMaxScore(group))}</div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="step-body" id="stepBody-${gi}">
+        <div class="step-body-inner">
+          ${group.items.map(it => `
+            <div class="item">
+              <div class="item-row">
+                <div class="item-text">
+                  <span class="code">${it.code}</span>${it.req ? '<span class="req">★</span>' : ''}${it.text}
+                  <div class="item-eval">${it.eval}</div>
+                </div>
+                <div class="opts" data-code="${it.code}">
+                  <button class="opt" data-v="0">انجام‌نشده</button>
+                  <button class="opt" data-v="1">ناکامل</button>
+                  <button class="opt" data-v="2">کامل</button>
+                </div>
+              </div>
+              ${it.crit ? `
+              
+              <div class="criteria-panel" id="crit-${it.code}">
+                <div class="crit-row crit-0"><span class="crit-tag">۰ = انجام نشده</span><span class="crit-desc">${it.crit[0]}</span></div>
+                <div class="crit-row crit-1"><span class="crit-tag">۱ = ناکامل</span><span class="crit-desc">${it.crit[1]}</span></div>
+                <div class="crit-row crit-2"><span class="crit-tag">۲ = کامل</span><span class="crit-desc">${it.crit[2]}</span></div>
+              </div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    stepsContainer.appendChild(stepEl);
+  });
+
+  // collapse behavior
+  stepsContainer.querySelectorAll('.step-head').forEach(head => {
+    head.addEventListener('click', () => {
+      const stepEl = head.closest('.step');
+      const body = stepEl.querySelector('.step-body');
+      const isOpen = stepEl.classList.contains('open');
+      if (isOpen){
+        body.style.maxHeight = null;
+        stepEl.classList.remove('open');
+      } else {
+        stepEl.classList.add('open');
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // criteria explanation toggle behavior
+  stepsContainer.querySelectorAll('.crit-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const box = document.getElementById(btn.dataset.target);
+      const isOpen = box.classList.contains('open');
+      box.classList.toggle('open', !isOpen);
+      btn.classList.toggle('open', !isOpen);
+      const stepBody = btn.closest('.step-body');
+      if (stepBody) stepBody.style.maxHeight = stepBody.scrollHeight + 'px';
+    });
+  });
+
+  // option click behavior
+  stepsContainer.querySelectorAll('.opts').forEach(optsEl => {
+    optsEl.querySelectorAll('.opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = optsEl.dataset.code;
+        const v = parseInt(btn.dataset.v, 10);
+        answers[code] = v;
+        optsEl.querySelectorAll('.opt').forEach(b => b.classList.toggle('sel', b === btn));
+        updateAll();
+      });
+    });
+  });
+
+  // open first section body height
+  document.querySelectorAll('.step.open .step-body').forEach(b => { b.style.maxHeight = b.scrollHeight + 'px'; });
+}
+
+function bandFor(score){
+  if (score <= 15) return {label:'عملکرد ضعیف (قرمز)', color:'var(--red)', bg:'var(--red-bg)', hex:'#c1473f'};
+  if (score <= 31) return {label:'کمتر از حد انتظار (نارنجی)', color:'var(--orange)', bg:'var(--orange-bg)', hex:'#d98a35'};
+  if (score <= 46) return {label:'قابل‌قبول (زرد)', color:'var(--yellow)', bg:'var(--yellow-bg)', hex:'#d8b23a'};
+  return {label:'مطلوب (سبز)', color:'var(--green)', bg:'var(--green-bg)', hex:'#3f9152'};
+}
+
+function updateAll(){
+  let total = 0, answeredCount = 0;
+  DATA.forEach((group, gi) => {
+    const s = stepScore(group);
+    total += s;
+    const el = document.getElementById(`stepScore-${gi}`);
+    if (el) el.textContent = `${faDigits(s)} / ${faDigits(stepMaxScore(group))}`;
+  });
+  Object.keys(answers).forEach(k => { if (answers[k] !== undefined) answeredCount++; });
+
+  document.getElementById('scoreNum').textContent = faDigits(total);
+  document.getElementById('answeredText').textContent = `${faDigits(answeredCount)} از ${faDigits(TOTAL_ITEMS)} شاخص پاسخ داده شده`;
+  document.getElementById('progressFill').style.width = (answeredCount / TOTAL_ITEMS * 100) + '%';
+
+  const band = bandFor(total);
+  const tag = document.getElementById('bandTag');
+  tag.textContent = band.label;
+  tag.style.background = band.bg;
+  tag.style.color = band.color;
+
+  const circumference = 2 * Math.PI * 31;
+  const ratio = Math.min(total / MAX_SCORE, 1);
+  const fillEl = document.getElementById('gaugeFill');
+  fillEl.style.strokeDasharray = circumference;
+  fillEl.style.strokeDashoffset = circumference * (1 - ratio);
+  fillEl.style.stroke = band.hex;
+}
+
+render();
+document.getElementById("scoreMax").textContent =
+"از " + faDigits(MAX_SCORE);
+updateAll();
+
+// ---------- Toast ----------
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ---------- Reset ----------
+document.getElementById('resetBtn').addEventListener('click', () => {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.querySelectorAll('.opt.sel').forEach(b => b.classList.remove('sel'));
+  updateAll();
+  showToast('پاسخ‌ها پاک شدند.');
+});
+
+// ---------- Print ----------
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+// ---------- Storage ----------
+function currentState(){
+  const total = DATA.reduce((s,g)=>s+stepScore(g),0);
+  return {
+    hospital: document.getElementById('hospName').value.trim(),
+    evaluator: document.getElementById('evalName').value.trim(),
+    date: document.getElementById('evalDate').value,
+    answers: {...answers},
+    total,
+    band: bandFor(total).label,
+    savedAt: new Date().toISOString(),
+  };
+}
+
+function assessmentRowToState(row){
+  return {
+    id: row.id,
+    hospital: row.hospital,
+    evaluator: row.evaluator,
+    date: row.assessment_date,
+    answers: row.answers || {},
+    total: row.total_score,
+    maxScore: row.max_score,
+    answeredCount: row.answered_count,
+    band: row.performance_band,
+    savedAt: row.saved_at
+  };
+}
+
+async function fetchCloudAssessments(){
+  if (!currentProfile) return null;
+  const { data, error } = await sb.from('tfh_assessments')
+    .select('id, hospital, evaluator, assessment_date, answers, total_score, max_score, answered_count, performance_band, saved_at')
+    .order('saved_at', { ascending: false })
+    .limit(500);
+  if (error){ console.warn('Could not load assessments from Supabase:', error); return null; }
+  return data;
+}
+
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  const hospital = document.getElementById('hospName').value.trim();
+  if (!hospital){
+    showToast('لطفاً نام بیمارستان را وارد کنید.');
+    return;
+  }
+  const state = currentState();
+  const answeredCount = Object.keys(answers).length;
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.disabled = true;
+  try {
+    const { error } = await sb.from('tfh_assessments').insert({
+      hospital,
+      evaluator: state.evaluator,
+      assessment_date: state.date,
+      answers: state.answers,
+      total_score: state.total,
+      max_score: MAX_SCORE,
+      answered_count: answeredCount,
+      performance_band: state.band
+    });
+    if (error) throw error;
+    showToast('ارزیابی در سامانه ابری ذخیره شد.');
+  } catch (e){
+    console.error(e);
+    showToast('ذخیرهٔ ارزیابی ناموفق بود: ' + (e && e.message ? e.message : ''));
+  } finally {
+    saveBtn.disabled = false;
+  }
+});
+
+function applyLoadedState(state){
+  document.getElementById('hospName').value = state.hospital || '';
+  document.getElementById('evalName').value = state.evaluator || '';
+  document.getElementById('evalDate').value = state.date || '';
+  Object.keys(answers).forEach(k => delete answers[k]);
+  Object.assign(answers, state.answers || {});
+  document.querySelectorAll('.opts').forEach(optsEl => {
+    const code = optsEl.dataset.code;
+    optsEl.querySelectorAll('.opt').forEach(b => {
+      b.classList.toggle('sel', answers[code] !== undefined && parseInt(b.dataset.v,10) === Number(answers[code]));
+    });
+  });
+  updateAll();
+}
+
+async function openLoadModal(){
+  const wrap = document.getElementById('modalList');
+  wrap.innerHTML = '<div class="modal-empty">در حال بارگذاری…</div>';
+  document.getElementById('modalOverlay').classList.add('show');
+
+  const rows = await fetchCloudAssessments();
+  wrap.innerHTML = '';
+  if (rows === null){
+    wrap.innerHTML = '<div class="modal-empty">بارگذاری فهرست از سامانه ابری ناموفق بود.</div>';
+    return;
+  }
+  if (rows.length === 0){
+    wrap.innerHTML = '<div class="modal-empty">هنوز ارزیابی ذخیره‌شده‌ای وجود ندارد.</div>';
+    return;
+  }
+  rows.forEach(row => {
+    const state = assessmentRowToState(row);
+    const item = document.createElement('div');
+    item.className = 'modal-item';
+    const canDelete = currentProfile && roleLevel(currentProfile.role) >= 2;
+    item.innerHTML = `
+      <div>
+        <div><b>${state.evaluator || '—'}</b>${state.hospital ? ' — ' + state.hospital : ''}</div>
+        <div style="color:var(--ink-soft);font-size:11.5px;">${state.date || ''} — امتیاز ${faDigits(state.total)} از ${faDigits(state.maxScore)}</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="load-btn">بارگذاری</span>
+        ${canDelete ? '<button title="حذف">🗑</button>' : ''}
+      </div>
+    `;
+    item.querySelector('.load-btn').onclick = () => {
+      applyLoadedState(state);
+      document.getElementById('modalOverlay').classList.remove('show');
+      showToast('ارزیابی بارگذاری شد.');
+    };
+    const delBtn = item.querySelector('button');
+    if (delBtn){
+      delBtn.onclick = async () => {
+        const { error } = await sb.from('tfh_assessments').delete().eq('id', row.id);
+        if (error){ showToast('حذف ناموفق بود: ' + (error.message || '')); }
+        openLoadModal();
+      };
+    }
+    wrap.appendChild(item);
+  });
+}
+document.getElementById('modalCloseBtn').addEventListener('click', () => {
+  document.getElementById('modalOverlay').classList.remove('show');
+});
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target.id === 'modalOverlay') document.getElementById('modalOverlay').classList.remove('show');
+});
+document.getElementById('loadBtn').addEventListener('click', openLoadModal);
+
+// Persian date
+function getTodayPersianDate(){return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+document.getElementById('evalDate').value=getTodayPersianDate();
+
+/* =========================================================
+   Tabs
+   ========================================================= */
+const tabAssessBtn = document.getElementById('tabAssessBtn');
+const tabCompareBtn = document.getElementById('tabCompareBtn');
+const tabReportBtn = document.getElementById('tabReportBtn');
+const assessmentView = document.getElementById('assessmentView');
+const compareView = document.getElementById('compareView');
+const reportView = document.getElementById('reportView');
+
+function activateTab(activeBtn, activeView){
+  [tabAssessBtn, tabCompareBtn, tabReportBtn].forEach(b => {
+    b.classList.remove('is-active'); b.setAttribute('aria-selected','false');
+  });
+  [assessmentView, compareView, reportView].forEach(v => v.style.display = 'none');
+  activeBtn.classList.add('is-active'); activeBtn.setAttribute('aria-selected','true');
+  activeView.style.display = '';
+}
+tabAssessBtn.addEventListener('click', () => activateTab(tabAssessBtn, assessmentView));
+tabCompareBtn.addEventListener('click', () => {
+  activateTab(tabCompareBtn, compareView);
+  loadCompareRecords();
+});
+tabReportBtn.addEventListener('click', () => {
+  activateTab(tabReportBtn, reportView);
+  loadReportRecords();
+});
+
+/* =========================================================
+   Compare hospitals (added feature)
+   ========================================================= */
+async function gatherCompareRecords(){
+  const rows = await fetchCloudAssessments();
+  const records = (rows || []).map(row => {
+    const s = assessmentRowToState(row);
+    return { id: s.id, hospital: s.hospital, date: s.date, name: s.evaluator, answers: s.answers, total: s.total, maxScore: s.maxScore };
+  });
+  records.sort((a,b) => (b.date||'').localeCompare(a.date||'') || b.total - a.total);
+  return records;
+}
+function compareOptionLabel(r){
+  return `${r.hospital} — ${r.date || '—'} (${faDigits(r.total)}/${faDigits(r.maxScore)})`;
+}
+
+let compareRecordsCache = [];
+
+async function loadCompareRecords(){
+  const statusEl = document.getElementById('compareStatus');
+  const selA = document.getElementById('compareSelectA');
+  const selB = document.getElementById('compareSelectB');
+  const prevA = selA.value, prevB = selB.value;
+  statusEl.className = '';
+  statusEl.textContent = 'در حال بارگذاری ارزیابی‌های موجود…';
+  compareRecordsCache = await gatherCompareRecords();
+  const options = ['<option value="">— انتخاب ارزیابی —</option>']
+    .concat(compareRecordsCache.map((r,i) => `<option value="${i}">${compareOptionLabel(r)}</option>`)).join('');
+  selA.innerHTML = options;
+  selB.innerHTML = options;
+  if (prevA) selA.value = prevA;
+  if (prevB) selB.value = prevB;
+  if (compareRecordsCache.length === 0){
+    statusEl.className = 'err';
+    statusEl.textContent = 'هیچ ارزیابی ذخیره‌شده‌ای برای مقایسه پیدا نشد.';
+  } else {
+    statusEl.textContent = faDigits(compareRecordsCache.length) + ' ارزیابی برای مقایسه در دسترس است.';
+  }
+  renderCompare();
+}
+
+function stepScoreFor(answersObj, group){
+  let total = 0;
+  group.items.forEach(it => {
+    const v = answersObj[it.code];
+    if (v !== undefined && v !== null) total += Number(v);
+  });
+  return { total, max: stepMaxScore(group) };
+}
+
+function renderCompare(){
+  const results = document.getElementById('compareResults');
+  const a = compareRecordsCache[document.getElementById('compareSelectA').value];
+  const b = compareRecordsCache[document.getElementById('compareSelectB').value];
+  if (!a || !b){
+    results.innerHTML = '<div class="compare-empty">برای مشاهدهٔ مقایسه، دو ارزیابی را از فهرست بالا انتخاب کنید.</div>';
+    return;
+  }
+  const bandA = bandFor(a.total), bandB = bandFor(b.total);
+  let winnerHtml;
+  if (a.total !== b.total){
+    const winner = a.total > b.total ? a : b;
+    winnerHtml = `<div class="compare-winner">🏆 ${winner.hospital} با اختلاف ${faDigits(Math.abs(a.total-b.total))} امتیاز، وضعیت بهتری دارد</div>`;
+  } else {
+    winnerHtml = `<div class="compare-winner">امتیاز کلی دو بیمارستان برابر است</div>`;
+  }
+  const summaryHtml = `
+    <div class="compare-summary">
+      <div class="compare-summary-card">
+        <h3>${a.hospital}</h3>
+        <div class="csc-meta">${a.name ? a.name + ' — ' : ''}${a.date || '—'}</div>
+        <div class="csc-score">${faDigits(a.total)}</div>
+        <div class="csc-max">از ${faDigits(a.maxScore)}</div>
+        <div class="csc-band" style="background:${bandA.bg};color:${bandA.color};">${bandA.label}</div>
+      </div>
+      <div class="compare-summary-card">
+        <h3>${b.hospital}</h3>
+        <div class="csc-meta">${b.name ? b.name + ' — ' : ''}${b.date || '—'}</div>
+        <div class="csc-score">${faDigits(b.total)}</div>
+        <div class="csc-max">از ${faDigits(b.maxScore)}</div>
+        <div class="csc-band" style="background:${bandB.bg};color:${bandB.color};">${bandB.label}</div>
+      </div>
+    </div>
+    ${winnerHtml}
+  `;
+  const stepsHtml = DATA.map(group => {
+    const da = stepScoreFor(a.answers, group);
+    const db = stepScoreFor(b.answers, group);
+    const pctA = da.max ? (da.total/da.max*100) : 0;
+    const pctB = db.max ? (db.total/db.max*100) : 0;
+    return `
+      <div class="compare-step-row">
+        <div class="compare-step-title">گام ${faDigits(group.step)} — ${group.title}</div>
+        <div class="cdb-line">
+          <span class="cdb-label">${a.hospital}</span>
+          <div class="cdb-track"><div class="cdb-fill a" style="width:${pctA}%;"></div></div>
+          <span class="cdb-val">${faDigits(da.total)}/${faDigits(da.max)}</span>
+        </div>
+        <div class="cdb-line">
+          <span class="cdb-label">${b.hospital}</span>
+          <div class="cdb-track"><div class="cdb-fill b" style="width:${pctB}%;"></div></div>
+          <span class="cdb-val">${faDigits(db.total)}/${faDigits(db.max)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+  results.innerHTML = summaryHtml + stepsHtml;
+}
+
+document.getElementById('compareSelectA').addEventListener('change', renderCompare);
+document.getElementById('compareSelectB').addEventListener('change', renderCompare);
+document.getElementById('compareRefreshBtn').addEventListener('click', loadCompareRecords);
+
+/* =========================================================
+   گزارش نموداری (added feature)
+   ========================================================= */
+const REPORT_PALETTE = ['#10578f','#c98a2e','#1c84c7','#8e63ce','#c1473f','#2da2bb','#994a64','#d8b23a','#0b3358','#a06fd0'];
+let reportRecordsCache = [];
+function reportPaletteColor(idx){ return REPORT_PALETTE[idx % REPORT_PALETTE.length]; }
+
+async function loadReportRecords(){
+  const statusEl = document.getElementById('reportStatus');
+  const listEl = document.getElementById('reportCityList');
+  const prevChecked = new Set(Array.from(listEl.querySelectorAll('input:checked')).map(cb => cb.value));
+  statusEl.className = '';
+  statusEl.textContent = 'در حال بارگذاری ارزیابی‌های موجود…';
+  reportRecordsCache = await gatherCompareRecords();
+  reportRecordsCache.forEach((r,i) => { r._idx = i; });
+  if (reportRecordsCache.length === 0){
+    listEl.innerHTML = '<div class="report-empty-list">هیچ ارزیابی ذخیره‌شده‌ای پیدا نشد.</div>';
+    statusEl.className = 'err';
+    statusEl.textContent = 'هیچ ارزیابی‌ای برای رسم نمودار موجود نیست.';
+    renderReportChart();
+    return;
+  }
+  listEl.innerHTML = reportRecordsCache.map((r,i) => `
+    <div class="report-city-item">
+      <span class="rci-swatch" style="background:${reportPaletteColor(i)};"></span>
+      <input type="checkbox" id="reportCity${i}" value="${i}">
+      <label for="reportCity${i}">${compareOptionLabel(r)}</label>
+    </div>
+  `).join('');
+  listEl.querySelectorAll('input').forEach(cb => {
+    if (prevChecked.has(cb.value)) cb.checked = true;
+    cb.addEventListener('change', renderReportChart);
+  });
+  if (prevChecked.size === 0){
+    listEl.querySelectorAll('input').forEach((cb,i) => { if (i < 2) cb.checked = true; });
+  }
+  statusEl.textContent = faDigits(reportRecordsCache.length) + ' ارزیابی موجود است — یک یا چند مورد را انتخاب کنید.';
+  renderReportChart();
+}
+
+function getSelectedReportRecords(){
+  return Array.from(document.getElementById('reportCityList').querySelectorAll('input:checked'))
+    .map(cb => reportRecordsCache[Number(cb.value)]).filter(Boolean);
+}
+function buildReportLegendHtml(records){
+  return `<div class="report-legend">${records.map(r =>
+    `<div class="report-legend-item"><span class="report-legend-swatch" style="background:${reportPaletteColor(r._idx)};"></span>${r.hospital}</div>`
+  ).join('')}</div>`;
+}
+
+function buildScoreChartSVG(records){
+  const w = Math.max(520, records.length*90+80), h = 320;
+  const padL=46, padR=20, padT=20, padB=70, plotW=w-padL-padR, plotH=h-padT-padB;
+  const bandBounds = [[0,18,'#fbeae8'],[18,37,'#fcf1e4'],[37,55,'#fbf5e2'],[55,MAX_SCORE,'#e9f5eb']];
+  let bandRects = '';
+  bandBounds.forEach(([lo,hi,fill]) => {
+    const yTop = padT + plotH - (hi/MAX_SCORE*plotH);
+    const rectH = (hi-lo)/MAX_SCORE*plotH;
+    bandRects += `<rect x="${padL}" y="${yTop}" width="${plotW}" height="${rectH}" fill="${fill}"></rect>`;
+  });
+  let gridLines = '';
+  [0, Math.round(MAX_SCORE*0.25), Math.round(MAX_SCORE*0.5), Math.round(MAX_SCORE*0.75), MAX_SCORE].forEach(v => {
+    const y = padT + plotH - (v/MAX_SCORE*plotH);
+    gridLines += `<line x1="${padL}" y1="${y}" x2="${padL+plotW}" y2="${y}" stroke="#e5e9f3" stroke-width="1"></line>`;
+    gridLines += `<text x="${padL-8}" y="${y+4}" font-size="11" fill="#3d5551" text-anchor="end">${faDigits(v)}</text>`;
+  });
+  const gap = plotW/records.length, barWidth = Math.min(56, gap*0.55);
+  let bars = '';
+  records.forEach((r,i) => {
+    const x = padL + i*gap + (gap-barWidth)/2;
+    const barH = Math.max(2, (r.total/MAX_SCORE)*plotH);
+    const y = padT + plotH - barH;
+    const color = reportPaletteColor(r._idx);
+    const label = r.hospital.length > 12 ? r.hospital.slice(0,11)+'…' : r.hospital;
+    bars += `
+      <rect x="${x}" y="${y}" width="${barWidth}" height="${barH}" rx="6" fill="${color}"></rect>
+      <text x="${x+barWidth/2}" y="${y-8}" font-size="12" font-weight="700" fill="#122421" text-anchor="middle">${faDigits(r.total)}</text>
+      <text x="${x+barWidth/2}" y="${padT+plotH+20}" font-size="11" fill="#122421" text-anchor="middle">${label}</text>
+      <text x="${x+barWidth/2}" y="${padT+plotH+36}" font-size="10" fill="#3d5551" text-anchor="middle">${r.date||'—'}</text>
+    `;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${bandRects}${gridLines}
+    <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+plotH}" stroke="#3d5551"></line>
+    <line x1="${padL}" y1="${padT+plotH}" x2="${padL+plotW}" y2="${padT+plotH}" stroke="#3d5551"></line>
+    ${bars}</svg>`;
+}
+
+function buildStepChartSVG(records){
+  const w = Math.max(760, DATA.length*Math.max(64, records.length*16+16)+60), h = 360;
+  const padL=42, padR=20, padT=20, padB=100, plotW=w-padL-padR, plotH=h-padT-padB;
+  const clusterW = plotW/DATA.length, barWidth = Math.min(20, (clusterW-10)/Math.max(1,records.length));
+  let gridLines = '';
+  [0,25,50,75,100].forEach(pct => {
+    const y = padT + plotH - (pct/100*plotH);
+    gridLines += `<line x1="${padL}" y1="${y}" x2="${padL+plotW}" y2="${y}" stroke="#eef1f9" stroke-width="1"></line>`;
+    gridLines += `<text x="${padL-8}" y="${y+4}" font-size="10" fill="#3d5551" text-anchor="end">${faDigits(pct)}٪</text>`;
+  });
+  let clusters = '';
+  DATA.forEach((group, di) => {
+    const x0 = padL + di*clusterW, groupWidth = barWidth*records.length, groupStart = x0 + (clusterW-groupWidth)/2;
+    records.forEach((r, ri) => {
+      const d = stepScoreFor(r.answers, group);
+      const pct = d.max ? (d.total/d.max*100) : 0;
+      const barH = Math.max(1, pct/100*plotH);
+      const x = groupStart + ri*barWidth, y = padT + plotH - barH;
+      clusters += `<rect x="${x}" y="${y}" width="${Math.max(1,barWidth-1)}" height="${barH}" fill="${reportPaletteColor(r._idx)}"><title>${r.hospital} — گام ${faDigits(group.step)}: ${faDigits(d.total)}/${faDigits(d.max)}</title></rect>`;
+    });
+    const labelX = x0 + clusterW/2;
+    clusters += `<text x="${labelX}" y="${padT+plotH+22}" font-size="10" fill="#3d5551" text-anchor="middle">گام ${faDigits(group.step)}<title>${group.title}</title></text>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${gridLines}
+    <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+plotH}" stroke="#3d5551"></line>
+    <line x1="${padL}" y1="${padT+plotH}" x2="${padL+plotW}" y2="${padT+plotH}" stroke="#3d5551"></line>
+    ${clusters}</svg>`;
+}
+
+function renderReportChart(){
+  const area = document.getElementById('reportChartArea');
+  const records = getSelectedReportRecords();
+  if (records.length === 0){
+    area.innerHTML = '<div class="compare-empty">برای رسم نمودار، حداقل یک ارزیابی را انتخاب کنید.</div>';
+    return;
+  }
+  const legendHtml = buildReportLegendHtml(records);
+  area.innerHTML = `
+    <div class="report-chart-card">
+      <h4>مقایسهٔ امتیاز کل بیمارستان‌ها</h4>
+      ${buildScoreChartSVG(records)}
+      ${legendHtml}
+    </div>
+    <div class="report-chart-card">
+      <h4>مقایسهٔ درصد پیشرفت به تفکیک گام</h4>
+      ${buildStepChartSVG(records)}
+      ${legendHtml}
+    </div>
+  `;
+}
+
+document.getElementById('reportSelectAllBtn').addEventListener('click', () => {
+  document.querySelectorAll('#reportCityList input').forEach(cb => { cb.checked = true; });
+  renderReportChart();
+});
+document.getElementById('reportClearBtn').addEventListener('click', () => {
+  document.querySelectorAll('#reportCityList input').forEach(cb => { cb.checked = false; });
+  renderReportChart();
+});
+document.getElementById('reportRefreshBtn').addEventListener('click', loadReportRecords);
+
+/* =========================================================
+   آپلود / مشاهدهٔ فایل برنامه‌های عملیاتی (level 2+)
+   ========================================================= */
+document.getElementById('uploadPlanBtn').addEventListener('click', () => {
+  if (currentAccessLevel < 2){ showToast('این قابلیت فقط برای کارشناس و admin در دسترس است'); return; }
+  document.getElementById('uploadPlanFileInput').click();
+});
+document.getElementById('uploadPlanFileInput').addEventListener('change', async e => {
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  if (file.type !== 'application/pdf'){ showToast('لطفاً فقط فایل PDF انتخاب کنید'); return; }
+  if (currentAccessLevel < 2){ showToast('این قابلیت فقط برای کارشناس و admin در دسترس است'); return; }
+  const btn = document.getElementById('uploadPlanBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ در حال آپلود…';
+  try {
+    const hospRaw = document.getElementById('hospName').value.trim() || 'بدون-نام-بیمارستان';
+    const safeHosp = hospRaw.replace(/[\/\\?%*:|"<>]/g, '-').slice(0,60);
+    const safeFileName = file.name.replace(/[\/\\?%*:|"<>]/g, '-');
+    const path = `${safeHosp}/${Date.now()}-${safeFileName}`;
+    const { error } = await sb.storage.from('hospital-plans').upload(path, file, { contentType:'application/pdf', upsert:false });
+    if (error){ showToast('آپلود ناموفق بود: ' + (error.message||'')); return; }
+    showToast(`فایل «${file.name}» با موفقیت بارگذاری شد`);
+  } catch (err){
+    showToast('خطای غیرمنتظره‌ای هنگام آپلود رخ داد'); console.error(err);
+  } finally {
+    btn.disabled = false; btn.textContent = originalLabel;
+  }
+});
+
+async function loadPlansCityFolders(){
+  const wrap = document.getElementById('plansList');
+  document.getElementById('plansBackBtn').style.display = 'none';
+  wrap.innerHTML = '<div class="modal-empty">در حال بارگذاری…</div>';
+  const { data, error } = await sb.storage.from('hospital-plans').list('', { limit:200, sortBy:{column:'name',order:'asc'} });
+  if (error){ wrap.innerHTML = '<div class="modal-empty">خطا: ' + (error.message||'') + '</div>'; return; }
+  const folders = (data||[]).filter(item => item.id === null);
+  if (folders.length === 0){ wrap.innerHTML = '<div class="modal-empty">هنوز هیچ فایلی بارگذاری نشده است.</div>'; return; }
+  wrap.innerHTML = '';
+  folders.forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'modal-item';
+    row.innerHTML = `<div><b>🏥 ${f.name}</b></div><span class="load-btn">مشاهده فایل‌ها</span>`;
+    row.querySelector('.load-btn').onclick = () => openPlansCityFolder(f.name);
+    wrap.appendChild(row);
+  });
+}
+async function openPlansCityFolder(hospName){
+  const wrap = document.getElementById('plansList');
+  document.getElementById('plansBackBtn').style.display = '';
+  wrap.innerHTML = '<div class="modal-empty">در حال بارگذاری…</div>';
+  const { data, error } = await sb.storage.from('hospital-plans').list(hospName, { limit:200, sortBy:{column:'created_at',order:'desc'} });
+  if (error){ wrap.innerHTML = '<div class="modal-empty">خطا: ' + (error.message||'') + '</div>'; return; }
+  const files = (data||[]).filter(item => item.id !== null);
+  if (files.length === 0){ wrap.innerHTML = '<div class="modal-empty">فایلی برای این بیمارستان یافت نشد.</div>'; return; }
+  wrap.innerHTML = '';
+  files.forEach(file => {
+    const fullPath = hospName + '/' + file.name;
+    const sizeKb = file.metadata && file.metadata.size ? Math.round(file.metadata.size/1024) + ' کیلوبایت' : '';
+    const uploadedAt = file.created_at ? new Date(file.created_at).toLocaleDateString('fa-IR') : '';
+    const row = document.createElement('div');
+    row.className = 'modal-item';
+    row.innerHTML = `
+      <div><div><b>${file.name}</b></div><div style="color:var(--ink-soft);font-size:11.5px;">${uploadedAt}${sizeKb?' — '+sizeKb:''}</div></div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="load-btn">دانلود</span>
+        ${currentAccessLevel >= 3 ? '<button title="حذف">🗑</button>' : ''}
+      </div>
+    `;
+    row.querySelector('.load-btn').onclick = () => downloadPlanFile(fullPath, file.name);
+    const delBtn = row.querySelector('button');
+    if (delBtn){ delBtn.onclick = () => deletePlanFile(fullPath, hospName); }
+    wrap.appendChild(row);
+  });
+}
+async function downloadPlanFile(fullPath, displayName){
+  const { data, error } = await sb.storage.from('hospital-plans').createSignedUrl(fullPath, 60);
+  if (error || !data){ showToast('دریافت لینک دانلود ناموفق بود'); return; }
+  const a = document.createElement('a');
+  a.href = data.signedUrl; a.download = displayName; a.target = '_blank'; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+async function deletePlanFile(fullPath, hospName){
+  if (!confirm('این فایل حذف شود؟')) return;
+  const { error } = await sb.storage.from('hospital-plans').remove([fullPath]);
+  if (error){ showToast('حذف ناموفق بود: ' + (error.message||'')); return; }
+  showToast('فایل حذف شد');
+  openPlansCityFolder(hospName);
+}
+document.getElementById('viewPlansBtn').addEventListener('click', () => {
+  if (currentAccessLevel < 2){ showToast('این قابلیت فقط برای کارشناس و admin در دسترس است'); return; }
+  document.getElementById('plansModalOverlay').classList.add('show');
+  loadPlansCityFolders();
+});
+document.getElementById('plansModalCloseBtn').addEventListener('click', () => {
+  document.getElementById('plansModalOverlay').classList.remove('show');
+});
+document.getElementById('plansModalOverlay').addEventListener('click', e => {
+  if (e.target.id === 'plansModalOverlay') document.getElementById('plansModalOverlay').classList.remove('show');
+});
+document.getElementById('plansBackBtn').addEventListener('click', loadPlansCityFolders);
+
+/* =========================================================
+   خروجی CSV (level 2+)
+   ========================================================= */
+function csvEscape(value){
+  const s = (value === null || value === undefined) ? '' : String(value);
+  if (/[",\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+async function exportAssessmentsCsv(){
+  if (currentAccessLevel < 2){ showToast('این قابلیت فقط برای کارشناس و admin در دسترس است'); return; }
+  const btn = document.getElementById('exportCsvBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ در حال آماده‌سازی…';
+  try {
+    const rows = await fetchCloudAssessments();
+    if (!rows){ showToast('دریافت داده‌ها ناموفق بود'); return; }
+    if (rows.length === 0){ showToast('هیچ ارزیابی‌ای برای خروجی گرفتن وجود ندارد'); return; }
+    const codes = DATA.flatMap(g => g.items.map(it => it.code));
+    const headerCols = ['ردیف','نام بیمارستان','ارزیاب','تاریخ ارزیابی','امتیاز کل','حداکثر امتیاز','تعداد پاسخ','وضعیت','تاریخ ذخیره'].concat(codes.map(c => 'شاخص ' + c));
+    const lines = [headerCols.map(csvEscape).join(',')];
+    rows.forEach((row, i) => {
+      const ans = row.answers || {};
+      const cols = [i+1, row.hospital, row.evaluator, row.assessment_date, row.total_score, row.max_score, row.answered_count, row.performance_band, row.saved_at]
+        .concat(codes.map(c => (ans[c] !== undefined && ans[c] !== null) ? ans[c] : ''));
+      lines.push(cols.map(csvEscape).join(','));
+    });
+    const csvContent = '\uFEFF' + lines.join('\r\n');
+    const blob = new Blob([csvContent], { type:'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0,10);
+    a.href = url; a.download = `tobacco-free-hospital-assessments-${stamp}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    showToast(`فایل CSV شامل ${faDigits(rows.length)} ارزیابی دانلود شد`);
+  } catch (err){
+    showToast('خطای غیرمنتظره‌ای در تهیهٔ خروجی رخ داد'); console.error(err);
+  } finally {
+    btn.disabled = false; btn.textContent = originalLabel;
+  }
+}
+document.getElementById('exportCsvBtn').addEventListener('click', exportAssessmentsCsv);
+
+/* =========================================================
+   Central portal session + per-program access
+   Authentication happens only in platform-sso.html.
+   This project reuses the existing Supabase session and reads
+   its approved role from plat_access.
+   ========================================================= */
+const SUPABASE_URL = 'https://ulhlmzvgiaofrclfvoox.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Tw8e07GmeCKW79HgMPLKSw_ydgLdC99';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const PORTAL_URL = 'platform-sso-global-admin.html';
+const ASSESSMENT_KEY = 'tobacco_free_hospital';
+const ROLE_LEVELS = { 'ارزیاب':1, 'کارشناس':2 };
+let isGlobalAdmin = false;
+function roleLevel(role){ return ROLE_LEVELS[role] || 0; }
+
+let currentProfile = null;
+let currentAuthEmail = null;
+let currentAccessLevel = 0;
+
+function updateUserInfoUI(profile, email){
+  const row = document.getElementById('userInfoRow');
+  if (!profile){ row.style.display = 'none'; return; }
+  row.style.display = '';
+  document.getElementById('userInfoText').textContent = `${profile.name} — ${email}`;
+  const displayRole = isGlobalAdmin ? 'مدیر کل' : profile.role;
+  const displayLevel = isGlobalAdmin ? 3 : roleLevel(profile.role);
+  document.getElementById('userRoleBadge').textContent =
+    `${displayRole} (سطح ${faDigits(displayLevel)})`;
+}
+
+function applyAccessControl(profile){
+  const level = profile ? (isGlobalAdmin ? 3 : roleLevel(profile.role)) : 0;
+  currentAccessLevel = level;
+
+  document.querySelectorAll('[data-min-level]').forEach(el => {
+    const min = parseInt(el.dataset.minLevel || '1', 10);
+    el.style.display = (level >= min) ? '' : 'none';
+  });
+
+  const activeBtn = document.querySelector('.view-tab.is-active');
+  if (activeBtn && activeBtn.style.display === 'none'){
+    activateTab(tabAssessBtn, assessmentView);
+  }
+}
+
+async function fetchPortalProfile(userId){
+  const { data, error } = await sb.from('plat_profiles')
+    .select('id,name,national_id')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (error){
+    console.warn('fetchPortalProfile error:', error);
+    return null;
+  }
+  return data;
+}
+
+async function fetchHospitalAccess(userId){
+  const { data, error } = await sb.from('plat_access')
+    .select('id,assessment_key,role,status')
+    .eq('user_id', userId)
+    .eq('assessment_key', ASSESSMENT_KEY)
+    .maybeSingle();
+
+  if (error){
+    console.warn('fetchHospitalAccess error:', error);
+    return null;
+  }
+  return data;
+}
+
+// Forces the browser to fetch a fresh copy of the destination page instead of a
+// cached one — appends a changing query param without disturbing any existing
+// query string or hash fragment. Does not touch localStorage/session data.
+function withCacheBust(url){
+  const [base, hash] = url.split('#');
+  const separator = base.includes('?') ? '&' : '?';
+  const busted = `${base}${separator}_cb=${Date.now()}`;
+  return hash !== undefined ? `${busted}#${hash}` : busted;
+}
+
+function redirectToPortal(reason){
+  const url = reason ? `${PORTAL_URL}?reason=${encodeURIComponent(reason)}` : PORTAL_URL;
+  window.location.replace(withCacheBust(url));
+}
+
+async function handleAuthenticatedSession(session){
+  const user = session.user;
+  currentAuthEmail = user.email;
+
+  const [{ data: globalAdmin, error: globalAdminError }, baseProfile, access] = await Promise.all([
+    sb.rpc('plat_is_global_admin'),
+    fetchPortalProfile(user.id),
+    fetchHospitalAccess(user.id)
+  ]);
+  isGlobalAdmin = !globalAdminError && globalAdmin === true;
+
+  // Direct access is permitted only when the central portal has approved
+  // an active hospital role for this authenticated user.
+  if (
+    !baseProfile ||
+    !baseProfile.name ||
+    !baseProfile.national_id ||
+    (!isGlobalAdmin && (!access || access.status !== 'active'))
+  ){
+    redirectToPortal('no-access');
+    return;
+  }
+
+  currentProfile = {
+    ...baseProfile,
+    role: isGlobalAdmin ? 'admin' : access.role,
+    status: isGlobalAdmin ? 'active' : access.status
+  };
+
+  updateUserInfoUI(currentProfile, user.email);
+  applyAccessControl(currentProfile);
+
+  const evalInput = document.getElementById('evalName');
+  if (evalInput && !evalInput.value.trim()){
+    evalInput.value = currentProfile.name;
+  }
+}
+
+function consumePlatformSessionHandoff(){
+  let rawPayload = null;
+
+  // Reliable fallback for local file:// navigation: the platform places the
+  // session in the URL fragment. Fragments are never sent to the web server.
+  try {
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const encoded = hashParams.get('platform_session');
+    if (encoded){
+      rawPayload = atob(encoded);
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  } catch (_) {
+    rawPayload = null;
+  }
+
+  if (!rawPayload && window.name){
+    rawPayload = window.name;
+  }
+
+  if (!rawPayload) return null;
+
+  try {
+    const payload = JSON.parse(rawPayload);
+    if (payload && payload.type === 'health-platform-session' &&
+        payload.access_token && payload.refresh_token){
+      window.name = '';
+      return {
+        access_token: payload.access_token,
+        refresh_token: payload.refresh_token
+      };
+    }
+  } catch (_) {
+    // Ignore malformed or unrelated handoff values.
+  }
+
+  window.name = '';
+  return null;
+}
+
+async function getPlatformSession(){
+  const existing = await sb.auth.getSession();
+  if (!existing.error && existing.data && existing.data.session){
+    return existing.data.session;
+  }
+
+  const handoff = consumePlatformSessionHandoff();
+  if (!handoff) return null;
+
+  const restored = await sb.auth.setSession(handoff);
+  if (restored.error){
+    console.warn('Could not restore platform session:', restored.error);
+    return null;
+  }
+  return restored.data && restored.data.session ? restored.data.session : null;
+}
+
+async function initAuth(){
+  applyAccessControl(null);
+
+  const session = await getPlatformSession();
+  if (!session){
+    redirectToPortal('no-session');
+    return;
+  }
+
+  await handleAuthenticatedSession(session);
+}
+
+// Clears everything the browser holds for this app's origin — localStorage,
+// sessionStorage, Cache Storage entries, and any cookies. Only ever called from
+// performLogout(), after sb.auth.signOut() has already run.
+async function clearAllBrowserCache(){
+  try { localStorage.clear(); } catch (e) { console.warn('Could not clear localStorage:', e); }
+  try { sessionStorage.clear(); } catch (e) { console.warn('Could not clear sessionStorage:', e); }
+  try {
+    if ('caches' in window){
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }
+  } catch (e) { console.warn('Could not clear Cache Storage:', e); }
+  try {
+    document.cookie.split(';').forEach(c => {
+      const eqPos = c.indexOf('=');
+      const name = (eqPos > -1 ? c.substr(0, eqPos) : c).trim();
+      if (name) document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    });
+  } catch (e) { console.warn('Could not clear cookies:', e); }
+}
+
+async function performLogout(){
+  await sb.auth.signOut();
+  await clearAllBrowserCache();
+  currentProfile = null;
+  currentAuthEmail = null;
+  applyAccessControl(null);
+  redirectToPortal();
+}
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  if (!confirm('از سامانه خارج می‌شوید؟')) return;
+  await performLogout();
+});
+
+document.getElementById('backToPortalBtn').addEventListener('click', () => {
+  window.location.href = withCacheBust(PORTAL_URL);
+});
+
+initAuth();
+</script>
+</body>
+</html>
