@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سامانهٔ ملی ارزیابی برنامه‌های سلامت</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<style>
+@font-face{
+  font-family:'Vazirmatn';
+  src:url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight:400; font-display:swap;
+}
+@font-face{
+  font-family:'Vazirmatn';
+  src:url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Medium.woff2') format('woff2');
+  font-weight:600; font-display:swap;
+}
+@font-face{
+  font-family:'Vazirmatn';
+  src:url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff2') format('woff2');
+  font-weight:700; font-display:swap;
+}
+@font-face{
+  font-family:'Vazirmatn';
+  src:url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-ExtraBold.woff2') format('woff2');
+  font-weight:800; font-display:swap;
+}
+
+:root{
+  --ink:#15221c;
+  --ink-2:#32463b;
+  --ink-soft:#68796f;
+  --bg:#f4f6f3;
+  --surface:#ffffff;
+  --surface-2:#f8faf8;
+  --line:#dfe7e1;
+  --line-strong:#ccd8d0;
+  --brand-950:#0b281c;
+  --brand-900:#103527;
+  --brand-800:#154b36;
+  --brand-700:#1c6548;
+  --brand-600:#247b57;
+  --brand-500:#2f9167;
+  --brand-100:#e5f2ea;
+  --brand-50:#f1f8f4;
+  --sand:#f5f1e8;
+  --sand-deep:#ebe4d4;
+  --amber:#996713;
+  --amber-bg:#fff5dc;
+  --red:#a43d37;
+  --red-bg:#fcebea;
+  --green:#216a48;
+  --green-bg:#e6f4eb;
+  --grey:#66746c;
+  --grey-bg:#eef2ef;
+  --radius-sm:10px;
+  --radius:14px;
+  --radius-lg:20px;
+  --shadow-sm:0 1px 2px rgba(16,53,39,.05);
+  --shadow:0 12px 32px rgba(20,75,54,.08), 0 2px 8px rgba(20,75,54,.05);
+  --shadow-lg:0 26px 70px rgba(7,37,25,.24);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{margin:0; padding:0; min-height:100%;}
+body{
+  font-family:'Vazirmatn', Tahoma, sans-serif;
+  background:
+    radial-gradient(circle at 12% 4%, rgba(47,145,103,.06), transparent 24rem),
+    linear-gradient(180deg,#f7f9f7 0,#f2f5f2 100%);
+  color:var(--ink);
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select{font-family:inherit;}
+button{touch-action:manipulation;}
+a{color:inherit;}
+::selection{background:#cde8d8;color:var(--brand-950);}
+
+/* ---------- App header / hero ---------- */
+.hero{
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255,255,255,.10), transparent 17rem),
+    radial-gradient(circle at 82% -20%, rgba(76,173,123,.24), transparent 25rem),
+    linear-gradient(135deg,var(--brand-950) 0%,var(--brand-900) 52%,#173d2e 100%);
+  padding:0 22px 92px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hero::after{
+  content:"";
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.024) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.024) 1px,transparent 1px);
+  background-size:32px 32px;
+  mask-image:linear-gradient(to bottom,black,transparent 90%);
+  pointer-events:none;
+}
+.hero-inner{
+  max-width:1120px;
+  margin:0 auto;
+  position:relative;
+  z-index:2;
+  padding-top:26px;
+}
+.portal-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding-bottom:30px;
+}
+.brand-block{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.brand-mark{
+  width:42px;height:42px;
+  display:grid;place-items:center;
+  border-radius:13px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+  font-size:19px;
+  flex:0 0 auto;
+}
+.brand-copy{min-width:0;}
+.brand-title{font-size:14px;font-weight:800;line-height:1.4;}
+.brand-subtitle{font-size:11.5px;color:#abc7b6;margin-top:2px;}
+.portal-help{
+  font-size:12px;
+  color:#cbe0d3;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  padding:7px 11px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.hero-content{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:end;
+  gap:28px;
+}
+.hero-copy{max-width:690px;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11.5px;font-weight:700;
+  color:#c6e3d1;
+  margin-bottom:10px;
+}
+.eyebrow-dot{
+  width:7px;height:7px;border-radius:50%;background:#65c18d;
+  box-shadow:0 0 0 5px rgba(101,193,141,.10);
+}
+.hero h1{
+  font-size:clamp(25px,4vw,38px);
+  line-height:1.45;
+  margin:0 0 9px;
+  font-weight:800;
+  letter-spacing:-.025em;
+}
+.hero p{
+  color:#bdd4c7;
+  font-size:14px;
+  max-width:690px;
+  margin:0;
+}
+.hero-note{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+  color:#b9d4c4;
+  padding:10px 13px;
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(255,255,255,.055);
+  border-radius:12px;
+  max-width:330px;
+}
+.hero-note-icon{
+  width:29px;height:29px;border-radius:9px;display:grid;place-items:center;
+  background:rgba(255,255,255,.09);flex:0 0 auto;
+}
+
+.user-info-row{
+  max-width:1120px;
+  margin:24px auto 0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  padding:10px 12px 10px 15px;
+  font-size:12.5px;
+  color:#fff;
+  backdrop-filter:blur(12px);
+}
+.user-info-row::before{
+  content:"";
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,#eff8f2,#bddfc9);
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.18);
+  flex:0 0 auto;
+}
+.user-info-row #userInfoText{
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+.role-badge{
+  padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;
+  background:rgba(255,255,255,.16);
+}
+.user-info-row .btn{
+  padding:7px 12px;
+  font-size:11.5px;
+  border-color:rgba(255,255,255,.16);
+}
+.user-info-row .u-logout{margin-inline-start:auto;}
+
+/* ---------- Main layout ---------- */
+.wrap{
+  max-width:1120px;
+  margin:-52px auto 0;
+  padding:0 22px 72px;
+  position:relative;
+  z-index:3;
+}
+.dashboard-panel{
+  background:rgba(255,255,255,.96);
+  border:1px solid rgba(213,224,216,.92);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+  padding:26px;
+}
+.section-head{
+  margin:0 0 20px;
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:18px;
+}
+.section-head-copy{max-width:660px;}
+.section-kicker{
+  color:var(--brand-700);
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:3px;
+}
+.section-head h2{
+  margin:0 0 4px;
+  font-size:20px;
+  letter-spacing:-.015em;
+}
+.section-head p{
+  margin:0;
+  font-size:13px;
+  color:var(--ink-soft);
+}
+.security-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:var(--green);
+  background:var(--green-bg);
+  border:1px solid #cce6d6;
+  border-radius:999px;
+  padding:7px 11px;
+  font-size:11.5px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+/* ---------- Program cards ---------- */
+.program-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(285px,1fr));
+  gap:15px;
+}
+.program-card{
+  --chip:var(--brand-700);
+  background:linear-gradient(180deg,#fff 0,#fbfcfb 100%);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow-sm);
+  padding:19px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  position:relative;
+  overflow:hidden;
+  min-height:228px;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.program-card:hover{
+  transform:translateY(-2px);
+  border-color:#cad9cf;
+  box-shadow:0 14px 36px rgba(20,75,54,.10);
+}
+.program-card::before{
+  content:"";
+  position:absolute;
+  inset-inline-start:0;
+  top:18px;
+  bottom:18px;
+  width:4px;
+  border-radius:999px;
+  background:var(--chip);
+}
+.program-card::after{
+  content:"";
+  position:absolute;
+  width:110px;height:110px;border-radius:50%;
+  inset-inline-end:-46px;top:-48px;
+  background:color-mix(in srgb,var(--chip) 8%,transparent);
+  pointer-events:none;
+}
+.program-head{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  position:relative;
+  z-index:1;
+}
+.program-icon{
+  width:46px;height:46px;
+  border-radius:14px;
+  display:grid;place-items:center;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  font-size:22px;
+  line-height:1;
+  flex:0 0 auto;
+}
+.program-title{
+  font-size:16px;
+  font-weight:800;
+  margin:1px 0 4px;
+  color:var(--ink);
+}
+.program-desc{
+  font-size:12.8px;
+  color:var(--ink-soft);
+  margin:0;
+  line-height:1.85;
+}
+.program-status{
+  margin-top:auto;
+  padding-top:4px;
+  border-top:1px dashed #e4eae6;
+}
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  font-weight:800;
+  padding:6px 10px;
+  border-radius:999px;
+}
+.status-pill.none{background:var(--grey-bg);color:var(--grey);}
+.status-pill.pending{background:var(--amber-bg);color:var(--amber);}
+.status-pill.active{background:var(--green-bg);color:var(--green);}
+.status-pill.rejected{background:var(--red-bg);color:var(--red);}
+.program-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.program-actions .btn{flex:1;}
+
+/* ---------- Buttons ---------- */
+.btn{
+  min-height:38px;
+  border:1px solid transparent;
+  cursor:pointer;
+  font-family:inherit;
+  font-weight:800;
+  font-size:13px;
+  border-radius:10px;
+  padding:8px 15px;
+  white-space:nowrap;
+  transition:transform .12s ease,box-shadow .15s ease,background .15s ease,border-color .15s ease;
+}
+.btn:hover{box-shadow:0 5px 14px rgba(16,53,39,.08);}
+.btn:active{transform:translateY(1px) scale(.99);}
+.btn-primary{
+  background:linear-gradient(180deg,var(--brand-700),var(--brand-800));
+  color:#fff;
+  box-shadow:0 5px 14px rgba(28,101,72,.16);
+}
+.btn-primary:hover{background:linear-gradient(180deg,var(--brand-800),var(--brand-900));}
+.btn-ghost{
+  background:#fff;
+  color:var(--brand-700);
+  border-color:var(--line);
+}
+.btn-ghost:hover{background:var(--brand-50);border-color:#c8d9ce;}
+.btn-sm{padding:7px 12px;font-size:12px;min-height:35px;}
+.btn:disabled{opacity:.55;cursor:not-allowed;box-shadow:none;}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.role-option:focus-within{
+  outline:3px solid rgba(47,145,103,.24);
+  outline-offset:2px;
+}
+
+/* ---------- Login ---------- */
+.login-overlay{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 15% 18%,rgba(61,156,108,.22),transparent 24rem),
+    radial-gradient(circle at 90% 90%,rgba(255,255,255,.08),transparent 20rem),
+    linear-gradient(135deg,#09271b,#103a29 55%,#174b36);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  padding:12px;
+}
+.login-overlay::before{
+  content:"";
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:34px 34px;
+  pointer-events:none;
+}
+.login-card{
+  position:relative;
+  z-index:1;
+  background:rgba(255,255,255,.985);
+  border-radius:16px;
+  box-shadow:var(--shadow-lg);
+  padding:18px 20px;
+  width:100%;
+  max-width:360px;
+  max-height:calc(100dvh - 24px);
+  overflow-y:auto;
+  border:1px solid rgba(255,255,255,.65);
+}
+.login-card::before{
+  content:"⚕";
+  width:36px;height:36px;
+  display:grid;place-items:center;
+  margin:0 0 9px;
+  border-radius:11px;
+  background:var(--brand-50);
+  border:1px solid #d8e9de;
+  color:var(--brand-700);
+  font-size:17px;
+  font-weight:800;
+}
+.login-card h2{
+  margin:0 0 3px;
+  font-size:15.5px;
+  color:var(--brand-950);
+  line-height:1.45;
+}
+.login-sub{
+  margin:0 0 10px;
+  font-size:11.5px;
+  color:var(--ink-soft);
+}
+.login-tabs{
+  display:flex;
+  gap:4px;
+  margin-bottom:10px;
+  background:#eef3ef;
+  border-radius:11px;
+  padding:4px;
+}
+.login-tab{
+  flex:1;
+  text-align:center;
+  padding:6px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:700;
+  color:var(--ink-soft);
+  cursor:pointer;
+  background:none;
+  border:none;
+}
+.login-tab.is-active{
+  background:#fff;
+  color:var(--brand-800);
+  box-shadow:0 2px 8px rgba(16,53,39,.08);
+}
+.login-field{
+  margin-bottom:8px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.login-field label{
+  font-size:11.5px;
+  font-weight:700;
+  color:var(--ink-2);
+}
+.login-field input{
+  font-family:inherit;
+  font-size:12.5px;
+  min-height:38px;
+  padding:7px 10px;
+  border-radius:10px;
+  border:1.5px solid var(--line-strong);
+  background:#fff;
+  color:var(--ink);
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.login-field input:hover{border-color:#b6c8bc;}
+.login-field input:focus{border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(47,145,103,.08);}
+.login-field input::placeholder{color:#9aa69f;}
+.login-error{
+  background:var(--red-bg);
+  color:var(--red);
+  border:1px solid #f2cfcc;
+  border-radius:10px;
+  padding:7px 9px;
+  font-size:11.5px;
+  margin-bottom:8px;
+}
+.login-submit{
+  width:100%;
+  justify-content:center;
+  padding:7px 10px;
+  min-height:38px;
+  font-size:12.5px;
+}
+.login-note{
+  background:var(--sand);
+  color:#6d5b32;
+  border:1px solid var(--sand-deep);
+  border-radius:10px;
+  padding:7px 9px;
+  font-size:10.8px;
+  margin-bottom:8px;
+  line-height:1.55;
+}
+
+.login-access-field{
+  margin:1px 0 8px;
+  padding:8px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--surface-2);
+}
+.login-access-title{
+  font-size:11.5px;
+  font-weight:800;
+  color:var(--ink-2);
+  margin-bottom:2px;
+}
+.login-access-help{
+  font-size:10.5px;
+  color:var(--ink-soft);
+  margin-bottom:6px;
+  line-height:1.5;
+}
+.login-access-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+.access-select-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:7px;
+}
+.access-select-card label{
+  display:block;
+  font-size:11px;
+  font-weight:800;
+  color:var(--brand-800);
+  margin-bottom:4px;
+}
+.access-select-card select{
+  width:100%;
+  min-height:34px;
+  border:1.5px solid var(--line-strong);
+  border-radius:8px;
+  padding:5px 7px;
+  background:#fff;
+  color:var(--ink);
+  font-size:11px;
+}
+.access-select-card small{
+  display:block;
+  color:var(--ink-soft);
+  font-size:10.5px;
+  line-height:1.6;
+  margin-top:6px;
+}
+@media (max-width:340px){
+  .login-access-grid{grid-template-columns:1fr;}
+}
+
+.login-status-block{text-align:center;padding:4px 0;}
+.login-status-icon{font-size:32px;margin-bottom:8px;}
+.login-status-block p{
+  font-size:12.5px;
+  color:var(--ink);
+  line-height:1.85;
+  margin:0 0 14px;
+}
+
+
+/* ---------- User management ---------- */
+.user-management-panel{display:none;}
+.user-management-panel.show{display:block;}
+.admin-panel{display:none;}
+.admin-panel.show{display:block;}
+
+.platform-tabs{
+  max-width:1000px; margin:16px auto 0; display:flex; gap:8px; flex-wrap:wrap;
+  position:relative; z-index:2;
+}
+.platform-tab{
+  border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.08); color:#dcefe4;
+  font-family:inherit; font-size:13px; font-weight:600; padding:9px 18px; border-radius:999px; cursor:pointer;
+}
+.platform-tab.is-active{ background:#fff; color:var(--brand-950); border-color:#fff; }
+.user-management-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.user-search{flex:1;min-width:220px;min-height:40px;border:1.5px solid var(--line-strong);border-radius:10px;padding:8px 11px;background:#fff;color:var(--ink);font-family:inherit;}
+.user-search:focus{border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(47,145,103,.08);outline:none;}
+.user-list{display:flex;flex-direction:column;gap:10px;}
+.user-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px;display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(130px,.8fr) auto;gap:12px;align-items:center;}
+.user-card.is-self{background:var(--surface-2);}
+.user-identity{min-width:0;}
+.user-name{font-weight:800;font-size:13.5px;color:var(--ink);}
+.user-meta{font-size:11.5px;color:var(--ink-soft);overflow-wrap:anywhere;margin-top:2px;}
+.user-control label{display:block;font-size:10.5px;font-weight:800;color:var(--ink-soft);margin-bottom:4px;}
+.user-control select{width:100%;min-height:38px;border:1.5px solid var(--line-strong);border-radius:9px;padding:6px 8px;background:#fff;color:var(--ink);font-family:inherit;}
+.user-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;}
+.user-actions .btn{min-height:36px;padding:7px 11px;}
+.access-summary{font-size:11.5px;color:var(--ink-soft);margin-top:5px;}
+.access-summary b{color:var(--brand-800);}
+@media (max-width:860px){.user-card{grid-template-columns:1fr 1fr;}.user-actions{justify-content:flex-start;}}
+@media (max-width:560px){.user-card{grid-template-columns:1fr;}.user-search{min-width:100%;}.user-actions .btn{flex:1;}}
+
+/* ---------- Overlays / modals ---------- */
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(7,32,22,.58);
+  backdrop-filter:blur(5px);
+  align-items:center;
+  justify-content:center;
+  z-index:900;
+  padding:20px;
+}
+.overlay.show{display:flex;}
+.modal{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:var(--shadow-lg);
+  max-width:500px;
+  width:100%;
+  max-height:84vh;
+  overflow:auto;
+  padding:24px;
+  border:1px solid rgba(255,255,255,.7);
+}
+.modal h3{
+  margin:0 0 6px;
+  font-size:16px;
+  color:var(--brand-950);
+}
+.modal .modal-sub{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin:0 0 18px;
+  line-height:1.85;
+}
+.modal-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.modal-close{
+  width:100%;
+  min-height:42px;
+  padding:10px;
+  background:var(--brand-700);
+  color:#fff;
+  border-radius:10px;
+  font-weight:800;
+  border:none;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:13px;
+}
+.modal-empty{
+  color:var(--ink-soft);
+  font-size:13px;
+  text-align:center;
+  padding:26px 0;
+}
+
+.approval-group{
+  margin-bottom:18px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:13px;
+  background:var(--surface-2);
+}
+.approval-group h4{
+  margin:0 0 8px;
+  font-size:13px;
+  color:var(--brand-800);
+}
+.approval-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  padding:12px 0;
+  border-top:1px solid var(--line);
+}
+.approval-item:first-of-type{border-top:none;}
+.approval-item .ai-meta{
+  font-size:12px;
+  color:var(--ink-soft);
+  line-height:1.85;
+  overflow-wrap:anywhere;
+}
+.approval-item .ai-meta b{color:var(--ink);font-size:13px;}
+.approval-item .ai-actions{display:flex;gap:8px;flex-shrink:0;}
+.approval-item .ai-actions button{
+  min-height:34px;
+  padding:6px 13px;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:800;
+  border:none;
+  cursor:pointer;
+  font-family:inherit;
+}
+.approval-item .ai-approve{background:var(--green-bg);color:var(--green);}
+.approval-item .ai-reject{background:var(--red-bg);color:var(--red);}
+
+.role-picker{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  margin-bottom:16px;
+}
+.role-option{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  padding:12px 13px;
+  cursor:pointer;
+  font-size:12.5px;
+  transition:border-color .15s ease,background .15s ease,transform .15s ease;
+}
+.role-option:hover{border-color:#bdd0c4;background:#fbfdfb;}
+.role-option input{margin:4px 0 0;accent-color:var(--brand-700);}
+.role-option.is-checked{
+  border-color:var(--brand-600);
+  background:var(--brand-50);
+  box-shadow:0 0 0 3px rgba(47,145,103,.06);
+}
+.role-option .ro-title{font-weight:800;color:var(--ink);}
+.role-option .ro-desc{color:var(--ink-soft);font-size:11.8px;margin-top:2px;}
+
+.toast{
+  position:fixed;
+  bottom:22px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--brand-950);
+  color:#fff;
+  padding:11px 18px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:11px;
+  font-size:13px;
+  box-shadow:0 12px 35px rgba(0,0,0,.26);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease;
+  z-index:1100;
+  max-width:min(90vw,520px);
+  text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+@media (max-width:780px){
+  .hero{padding-inline:18px;padding-bottom:78px;}
+  .hero-inner{padding-top:18px;}
+  .portal-topbar{padding-bottom:24px;}
+  .brand-subtitle,.portal-help{display:none;}
+  .hero-content{grid-template-columns:1fr;}
+  .hero-note{display:none;}
+  .hero h1{font-size:27px;}
+  .wrap{padding-inline:15px;margin-top:-42px;}
+  .dashboard-panel{padding:18px;border-radius:17px;}
+  .section-head{align-items:flex-start;flex-direction:column;}
+  .security-chip{display:none;}
+  .program-grid{grid-template-columns:1fr;}
+  .user-info-row .u-logout{margin-inline-start:0;}
+}
+@media (max-width:520px){
+  .login-overlay{padding:10px;align-items:center;}
+  .login-card{
+    max-width:360px;
+    max-height:calc(100dvh - 20px);
+    border-radius:16px;
+    padding:16px 16px max(16px,env(safe-area-inset-bottom));
+  }
+  .overlay{padding:0;align-items:flex-end;}
+  .modal{
+    max-width:none;
+    max-height:88vh;
+    border-radius:20px 20px 0 0;
+    padding:22px 18px max(20px,env(safe-area-inset-bottom));
+  }
+  .hero{padding-bottom:68px;}
+  .brand-mark{width:38px;height:38px;border-radius:11px;}
+  .brand-title{font-size:13px;}
+  .hero h1{font-size:24px;}
+  .hero p{font-size:13px;}
+  .dashboard-panel{padding:15px;}
+  .program-card{padding:17px;min-height:210px;}
+  .program-actions{flex-direction:column;}
+  .program-actions .btn{width:100%;}
+  .approval-item{align-items:stretch;}
+  .approval-item .ai-actions{width:100%;}
+  .approval-item .ai-actions button{flex:1;}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important;}
+}
+</style>
+</head>
+<body>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <h2>سامانهٔ ملی ارزیابی برنامه‌های سلامت</h2>
+    <p class="login-sub" id="loginModeHint">برای استفاده از سامانه، وارد حساب کاربری خود شوید.</p>
+
+    <div class="login-tabs">
+      <button type="button" class="login-tab is-active" id="loginTabSignin">ورود</button>
+      <button type="button" class="login-tab" id="loginTabSignup">ثبت‌نام</button>
+    </div>
+
+    <div class="login-field" id="loginNameField" style="display:none">
+      <label for="loginName">نام و نام خانوادگی</label>
+      <input type="text" id="loginName" placeholder="مثلاً: علی محمدی" autocomplete="name">
+    </div>
+    <div class="login-field" id="loginEmailField">
+      <label for="loginEmail">ایمیل</label>
+      <input type="email" id="loginEmail" placeholder="name@example.com" dir="ltr" autocomplete="email">
+    </div>
+    <div class="login-field" id="loginNationalIdField" style="display:none">
+      <label for="loginNationalId">شماره ملی</label>
+      <input type="text" id="loginNationalId" placeholder="۱۰ رقم" inputmode="numeric" maxlength="10" dir="ltr" autocomplete="off">
+    </div>
+    <div class="login-field" id="loginPasswordField">
+      <label for="loginPassword">رمز عبور</label>
+      <input type="password" id="loginPassword" placeholder="حداقل ۶ کاراکتر" dir="ltr" autocomplete="current-password">
+    </div>
+
+    <div class="login-access-field" id="loginAccessField" style="display:none">
+      <div class="login-access-title">انتخاب نهاد و نقش کاربری</div>
+      <div class="login-access-help">نهاد موردنظر و نقش خود را برای ورود به سامانه انتخاب کنید.</div>
+      <div class="login-access-grid">
+        <div class="access-select-card">
+          <label for="loginOrganization">نهاد</label>
+          <select id="loginOrganization" autocomplete="organization">
+            <option value="">انتخاب نهاد</option>
+            <option value="شهر">شهر (بدون دخانیات)</option>
+            <option value="بیمارستان">بیمارستان (بدون دخانیات)</option>
+            <option value="دانشگاه">دانشگاه (به‌زودی)</option>
+          </select>
+        </div>
+        <div class="access-select-card">
+          <label for="loginRole">نقش</label>
+          <select id="loginRole">
+            <option value="">انتخاب نقش</option>
+            <option value="ارزیاب">ارزیاب</option>
+            <option value="کارشناس">کارشناس</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <p class="login-note" id="loginSignupNote" style="display:none">
+      نهاد و نقش انتخاب‌شده، درخواست دسترسی شما را برای همان برنامه ثبت می‌کند. برای «شهر» و «بیمارستان» این درخواست بلافاصله ثبت می‌شود؛ نهادهایی که برچسب «به‌زودی» دارند هنوز برنامه‌ای متصل ندارند. پس از ورود می‌توانید از داشبورد برای هر برنامهٔ دیگری هم جداگانه درخواست دسترسی بدهید.</p>
+
+    <div class="login-error" id="loginError" style="display:none" role="alert" aria-live="polite"></div>
+    <button class="btn btn-primary login-submit" id="loginSubmitBtn" type="button">ورود</button>
+
+    <div class="login-status-block" id="loginStatusBlock" style="display:none">
+      <div class="login-status-icon">✓</div>
+      <p id="loginStatusText"></p>
+      <button class="btn btn-ghost login-submit" id="loginStatusLogoutBtn" type="button">خروج</button>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="portal-topbar">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">⚕</div>
+        <div class="brand-copy">
+          <div class="brand-title">سامانهٔ ملی ارزیابی برنامه‌های سلامت</div>
+          <div class="brand-subtitle">درگاه یکپارچه مدیریت دسترسی و ارزیابی</div>
+        </div>
+      </div>
+      <div class="portal-help">درگاه امن برنامه‌های سلامت</div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> میزکار ارزیابی سلامت</div>
+        <h1>همهٔ برنامه‌های ارزیابی شما، در یک فضای یکپارچه</h1>
+        <p>وضعیت دسترسی هر برنامه را مشاهده کنید، نقش موردنیاز را درخواست دهید و پس از تأیید مستقیماً وارد فرایند ارزیابی شوید.</p>
+      </div>
+      <div class="hero-note">
+        <div class="hero-note-icon" aria-hidden="true">⌁</div>
+        <div>سطح دسترسی هر برنامه مستقل است و بر اساس نقش شما مدیریت می‌شود.</div>
+      </div>
+    </div>
+
+    <div class="user-info-row" id="userInfoRow" style="display:none">
+      <span id="userInfoText"></span>
+      <button class="btn btn-ghost" id="userManagementBtn" type="button" style="display:none">مدیریت کاربران</button>
+      <button class="btn btn-ghost u-logout" id="logoutBtn" type="button">خروج</button>
+    </div>
+  </div>
+</div>
+
+<div class="platform-tabs" id="platformTabs" style="display:none">
+  <button type="button" class="platform-tab is-active" id="tabProgramsBtn">برنامه‌ها</button>
+  <button type="button" class="platform-tab" id="tabAdminBtn" style="display:none">مدیران</button>
+</div>
+
+<main class="wrap">
+  <section class="dashboard-panel" id="dashboardPanel" aria-labelledby="programsHeading">
+    <div class="section-head">
+      <div class="section-head-copy">
+        <div class="section-kicker">داشبورد دسترسی</div>
+        <h2 id="programsHeading">برنامه‌های در دسترس</h2>
+        <p>برای هر برنامه، وضعیت دسترسی و اقدام بعدی شما در همان کارت نمایش داده می‌شود.</p>
+      </div>
+      <div class="security-chip">● اتصال امن به سامانه</div>
+    </div>
+
+    <div class="program-grid" id="programGrid">
+      <div class="modal-empty">در حال بارگذاری برنامه‌ها…</div>
+    </div>
+  </section>
+
+  <section class="dashboard-panel user-management-panel" id="userManagementPanel" aria-labelledby="userManagementHeading">
+    <div class="section-head">
+      <div class="section-head-copy">
+        <div class="section-kicker">مدیریت دسترسی</div>
+        <h2 id="userManagementHeading">مدیریت کاربران</h2>
+        <p>کاربران را جستجو کنید و برای همه برنامه‌های سامانه نقش و سطح دسترسی تعیین کنید.</p>
+      </div>
+      <button class="btn btn-ghost" id="backToDashboardBtn" type="button">بازگشت به داشبورد</button>
+    </div>
+    <div class="user-management-toolbar">
+      <input class="user-search" id="userSearchInput" type="search" placeholder="جستجو بر اساس نام، ایمیل یا نهاد…">
+      <button class="btn btn-ghost" id="refreshUsersBtn" type="button">↻ تازه‌سازی</button>
+    </div>
+    <div class="login-error" id="userManagementError" style="display:none" role="alert"></div>
+    <div class="user-list" id="userManagementList">
+      <div class="modal-empty">در حال بارگذاری کاربران…</div>
+    </div>
+  </section>
+
+  <section class="dashboard-panel admin-panel" id="adminPanel" aria-labelledby="adminPanelHeading">
+    <div class="section-head">
+      <div class="section-head-copy">
+        <div class="section-kicker">مدیریت دسترسی</div>
+        <h2 id="adminPanelHeading">مدیران</h2>
+        <p>درخواست‌های دسترسی همهٔ برنامه‌ها برای مدیر کل سامانه در این بخش نمایش داده می‌شوند.</p>
+      </div>
+    </div>
+    <div id="approvalsList"></div>
+  </section>
+</main>
+
+<div class="overlay" id="requestModalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="requestModalTitle">
+    <h3 id="requestModalTitle">درخواست دسترسی</h3>
+    <p class="modal-sub">سطح دسترسی موردنیاز خود را برای این برنامه انتخاب کنید. سطح ارزیاب بلافاصله فعال می‌شود؛ درخواست کارشناس نیاز به تأیید مدیر کل سامانه دارد.</p>
+
+    <div class="role-picker" id="rolePicker">
+      <label class="role-option" data-role="ارزیاب">
+        <input type="radio" name="requestRole" value="ارزیاب" checked>
+        <div>
+          <div class="ro-title">ارزیاب (سطح ۱)</div>
+          <div class="ro-desc">دسترسی فوری، بدون نیاز به تأیید</div>
+        </div>
+      </label>
+
+      <label class="role-option" data-role="کارشناس">
+        <input type="radio" name="requestRole" value="کارشناس">
+        <div>
+          <div class="ro-title">کارشناس (سطح ۲)</div>
+          <div class="ro-desc">نیاز به تأیید مدیر کل سامانه</div>
+        </div>
+      </label>
+    </div>
+
+    <div class="login-error" id="requestError" style="display:none" role="alert" aria-live="polite"></div>
+    <button class="btn btn-primary login-submit" id="requestSubmitBtn" type="button" style="margin-bottom:10px;">ثبت درخواست</button>
+    <button class="modal-close" id="requestModalCloseBtn" style="background:var(--grey);">انصراف</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://ulhlmzvgiaofrclfvoox.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Tw8e07GmeCKW79HgMPLKSw_ydgLdC99';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Small color chip per program, purely visual — ties each card back to its own app's identity.
+const PROGRAM_CHIP = {
+  healthy_city: '#0E7C61',
+  tobacco_free_city: '#12507f',
+  tobacco_free_hospital: '#10578f'
+};
+const ROLE_LEVELS = { 'ارزیاب':1, 'کارشناس':2 };
+let isGlobalAdmin = false;
+const INITIAL_ACCESS_KEYS = {
+  'بیمارستان': 'tobacco_free_hospital',
+  'شهر': 'tobacco_free_city'
+};
+
+// Central app routes. Keep these in one place so dashboard buttons and automatic
+// post-auth routing always open the same destination.
+const APP_ROUTES = {
+  tobacco_free_hospital: 'hospital-assessment-global-admin.html',
+  tobacco_free_city: 'city-assessment-global-admin.html'
+};
+
+let currentProfile = null;
+let currentAuthEmail = null;
+let currentAuthUserId = null;
+let pendingAuthUser = null;
+let loginStage = 'signin';
+let programsCache = [];
+let accessCache = {}; // assessment_key -> access row (or null)
+let requestModalKey = null;
+let adminProgramKeys = [];
+let managedUsersCache = [];
+let managedAccessCache = [];
+
+function isValidEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim()); }
+function isValidNationalId(code){
+  code = String(code).trim();
+  if (!/^\d{10}$/.test(code)) return false;
+  if (/^(\d)\1{9}$/.test(code)) return false;
+  const check = parseInt(code[9],10);
+  let sum = 0;
+  for (let i=0;i<9;i++) sum += parseInt(code[i],10) * (10-i);
+  const remainder = sum % 11;
+  return (remainder < 2 && check === remainder) || (remainder >= 2 && check === (11-remainder));
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ---------------- Login overlay plumbing ---------------- */
+function showLoginOverlay(){ document.getElementById('loginOverlay').style.display = 'flex'; }
+function hideLoginOverlay(){ document.getElementById('loginOverlay').style.display = 'none'; }
+function clearLoginError(){ document.getElementById('loginError').style.display = 'none'; }
+function showLoginError(msg){
+  const el = document.getElementById('loginError');
+  el.textContent = msg; el.style.display = '';
+}
+
+function showAccountStatusBlock(){
+  document.querySelector('.login-tabs').style.display = 'none';
+  ['loginNameField','loginEmailField','loginNationalIdField','loginPasswordField','loginAccessField'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById('loginSignupNote').style.display = 'none';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('loginSubmitBtn').style.display = 'none';
+  document.getElementById('loginModeHint').style.display = 'none';
+  document.getElementById('loginStatusText').textContent =
+    'حساب شما فعال است. برای دسترسی به هر برنامه، از داشبورد درخواست بدهید.';
+  document.getElementById('loginStatusBlock').style.display = '';
+  showLoginOverlay();
+}
+function hideAccountStatusBlock(){
+  document.getElementById('loginStatusBlock').style.display = 'none';
+  document.getElementById('loginModeHint').style.display = '';
+  document.getElementById('loginSubmitBtn').style.display = '';
+  const tabs = document.querySelector('.login-tabs');
+  if (tabs) tabs.style.display = '';
+}
+
+function renderLoginStage(stage){
+  loginStage = stage;
+  clearLoginError();
+  hideAccountStatusBlock();
+  const tabs = document.querySelector('.login-tabs');
+  const nameField = document.getElementById('loginNameField');
+  const emailField = document.getElementById('loginEmailField');
+  const nationalIdField = document.getElementById('loginNationalIdField');
+  const passwordField = document.getElementById('loginPasswordField');
+  const accessField = document.getElementById('loginAccessField');
+  const note = document.getElementById('loginSignupNote');
+  const hint = document.getElementById('loginModeHint');
+  const submitBtn = document.getElementById('loginSubmitBtn');
+  const signinTab = document.getElementById('loginTabSignin');
+  const signupTab = document.getElementById('loginTabSignup');
+
+  tabs.style.display = 'none';
+  nameField.style.display = 'none'; emailField.style.display = 'none'; nationalIdField.style.display = 'none';
+  passwordField.style.display = 'none'; accessField.style.display = 'none'; note.style.display = 'none';
+
+  if (stage === 'signin'){
+    tabs.style.display = '';
+    signinTab.classList.add('is-active'); signupTab.classList.remove('is-active');
+    emailField.style.display = ''; passwordField.style.display = '';
+    hint.textContent = 'برای استفاده از سامانه، وارد حساب کاربری خود شوید.';
+    submitBtn.textContent = 'ورود';
+  } else if (stage === 'signup'){
+    tabs.style.display = '';
+    signupTab.classList.add('is-active'); signinTab.classList.remove('is-active');
+    nameField.style.display = ''; emailField.style.display = ''; nationalIdField.style.display = '';
+    passwordField.style.display = ''; accessField.style.display = ''; note.style.display = '';
+    hint.textContent = 'حساب کاربری بسازید و سطح دسترسی موردنیاز خود را انتخاب کنید.';
+    submitBtn.textContent = 'ثبت‌نام';
+  } else if (stage === 'complete-profile'){
+    nameField.style.display = ''; nationalIdField.style.display = ''; accessField.style.display = ''; note.style.display = '';
+    const meta = pendingAuthUser && pendingAuthUser.user_metadata ? pendingAuthUser.user_metadata : {};
+    if (meta.initial_organization !== undefined) document.getElementById('loginOrganization').value = meta.initial_organization || '';
+    if (meta.initial_role !== undefined) document.getElementById('loginRole').value = meta.initial_role || '';
+    hint.textContent = 'ورود شما تأیید شد. اطلاعات حساب و سطح دسترسی موردنیاز را تکمیل کنید.';
+    submitBtn.textContent = 'تکمیل ثبت‌نام و ورود';
+  }
+}
+
+function updateUserInfoUI(profile, email){
+  const row = document.getElementById('userInfoRow');
+  const tabs = document.getElementById('platformTabs');
+  if (!profile){ row.style.display = 'none'; tabs.style.display = 'none'; return; }
+  row.style.display = '';
+  tabs.style.display = '';
+  const displayRole = isGlobalAdmin ? 'مدیر کل' : profile.role;
+  const context = [profile.organization, displayRole].filter(Boolean).join(' — ');
+  document.getElementById('userInfoText').textContent = `${profile.name} — ${email}${context ? ' — ' + context : ''}`;
+}
+
+async function fetchProfile(userId){
+  const { data, error } = await sb.from('plat_profiles')
+    .select('id,name,national_id,organization,role').eq('id', userId).maybeSingle();
+  if (error){ console.warn('fetchProfile error:', error); return null; }
+  return data;
+}
+async function insertProfile(userId, name, nationalId, organization, role){
+  const { data, error } = await sb.from('plat_profiles')
+    .update({ name, national_id: nationalId, organization, role })
+    .eq('id', userId)
+    .select('id,name,national_id,organization,role')
+    .single();
+  return { data, error };
+}
+
+async function ensureInitialAccessRequest(assessmentKey, role){
+  if (!assessmentKey || !role) return { error:null };
+
+  const { data: existing, error: readError } = await sb.from('plat_access')
+    .select('id,status,role')
+    .eq('user_id', currentAuthUserId)
+    .eq('assessment_key', assessmentKey)
+    .maybeSingle();
+
+  if (readError) return { error:readError };
+
+  // Never downgrade or overwrite an already-active access row during signup completion.
+  if (existing && existing.status === 'active') return { error:null };
+
+  if (existing){
+    const { error } = await sb.from('plat_access')
+      .update({ role })
+      .eq('id', existing.id);
+    return { error };
+  }
+
+  const { error } = await sb.from('plat_access')
+    .insert({ assessment_key: assessmentKey, role });
+  return { error };
+}
+
+async function saveInitialAccessRequest(organization, role){
+  const assessmentKey = INITIAL_ACCESS_KEYS[organization];
+  // City and hospital are already mapped to assessments in this version.
+  // Other organization choices are retained in auth metadata until their assessments are configured.
+  if (!assessmentKey || !role) return { error:null };
+  return ensureInitialAccessRequest(assessmentKey, role);
+}
+
+
+function appKeyForOrganization(organization){
+  return INITIAL_ACCESS_KEYS[organization] || null;
+}
+
+function appRouteForKey(assessmentKey){
+  return APP_ROUTES[assessmentKey] || null;
+}
+
+function shouldAutoOpenSelectedApp(profile){
+  if (!profile || !profile.organization) return false;
+  const assessmentKey = appKeyForOrganization(profile.organization);
+  if (!assessmentKey) return false;
+  const access = accessCache[assessmentKey];
+  return !!(access && access.status === 'active' && appRouteForKey(assessmentKey));
+}
+
+// Forces the browser to fetch a fresh copy of the destination page instead of a
+// cached one — appends a changing query param without disturbing any existing
+// query string or hash fragment. Does not touch localStorage/session data.
+function withCacheBust(url){
+  const [base, hash] = url.split('#');
+  const separator = base.includes('?') ? '&' : '?';
+  const busted = `${base}${separator}_cb=${Date.now()}`;
+  return hash !== undefined ? `${busted}#${hash}` : busted;
+}
+
+async function navigateToAssessmentApp(assessmentKey){
+  const route = appRouteForKey(assessmentKey);
+  if (!route) return false;
+
+  const { data, error } = await sb.auth.getSession();
+  const session = data && data.session;
+  if (error || !session){
+    showToast('نشست ورود پیدا نشد. لطفاً دوباره وارد شوید.');
+    showLoginOverlay();
+    return false;
+  }
+
+  // Separate file:// pages do not reliably share localStorage. Pass the
+  // already-authenticated Supabase session through window.name, then the
+  // assessment page immediately imports it and clears window.name.
+  const sessionPayload = {
+    type: 'health-platform-session',
+    access_token: session.access_token,
+    refresh_token: session.refresh_token
+  };
+
+  // window.name works for normal same-origin navigation. The URL fragment is a
+  // fallback for local file:// use, where browsers may isolate storage/origins.
+  // Fragments are not sent to the server and the target page clears it immediately.
+  window.name = JSON.stringify(sessionPayload);
+  const handoff = btoa(JSON.stringify(sessionPayload));
+  window.location.href = withCacheBust(`${route}#platform_session=${encodeURIComponent(handoff)}`);
+  return true;
+}
+
+async function openSelectedApp(profile){
+  const assessmentKey = appKeyForOrganization(profile && profile.organization);
+  if (!assessmentKey) return false;
+  return navigateToAssessmentApp(assessmentKey);
+}
+
+async function finalizeProfileAccess(profile, email, options = {}){
+  hideAccountStatusBlock();
+  currentProfile = profile;
+  updateUserInfoUI(profile, email);
+  await loadDashboard();
+
+  // Redirect only when the matching access row is active. This preserves the
+  // approval workflow for کارشناس / مدیر while opening evaluator apps immediately.
+  // The login overlay stays up throughout loadDashboard() so evaluators never see
+  // a flash of the dashboard before being sent straight to their app.
+  if (options.autoOpenApp && shouldAutoOpenSelectedApp(profile)) {
+    await openSelectedApp(profile);
+    return true;
+  }
+
+  hideLoginOverlay();
+  return true;
+}
+
+async function handleAuthenticatedSession(session, options = {}){
+  const user = session.user;
+  currentAuthEmail = user.email;
+  currentAuthUserId = user.id;
+  const profile = await fetchProfile(user.id);
+  if (profile){
+    if (profile.organization) document.getElementById('loginOrganization').value = profile.organization;
+    if (profile.role) document.getElementById('loginRole').value = profile.role;
+  }
+  if (!profile || !profile.name || !profile.national_id){
+    pendingAuthUser = user;
+    renderLoginStage('complete-profile');
+    return;
+  }
+  await finalizeProfileAccess(profile, user.email, options);
+}
+
+async function submitLogin(){
+  clearLoginError();
+  const submitBtn = document.getElementById('loginSubmitBtn');
+  submitBtn.disabled = true;
+  try {
+    if (loginStage === 'signin'){
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      if (!isValidEmail(email)){ showLoginError('ایمیل واردشده معتبر نیست.'); return; }
+      if (!password){ showLoginError('رمز عبور را وارد کنید.'); return; }
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error){ showLoginError('ورود ناموفق بود: ' + (error.message||'')); return; }
+      await handleAuthenticatedSession(data.session, { autoOpenApp:true });
+
+    } else if (loginStage === 'signup'){
+      const name = document.getElementById('loginName').value.trim();
+      const email = document.getElementById('loginEmail').value.trim();
+      const nationalId = document.getElementById('loginNationalId').value.trim();
+      const organization = document.getElementById('loginOrganization').value;
+      const role = document.getElementById('loginRole').value;
+      const password = document.getElementById('loginPassword').value;
+      if (!name){ showLoginError('لطفاً نام و نام خانوادگی را وارد کنید.'); return; }
+      if (!isValidEmail(email)){ showLoginError('ایمیل واردشده معتبر نیست.'); return; }
+      if (!isValidNationalId(nationalId)){ showLoginError('شماره ملی واردشده معتبر نیست (باید ۱۰ رقم و صحیح باشد).'); return; }
+      if (!organization){ showLoginError('لطفاً نهاد را انتخاب کنید.'); return; }
+      if (!role){ showLoginError('لطفاً نقش کاربری را انتخاب کنید.'); return; }
+      if (!password || password.length < 6){ showLoginError('رمز عبور باید حداقل ۶ کاراکتر باشد.'); return; }
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password,
+        options: { data: { name, national_id: nationalId, initial_organization: organization, initial_role: role } }
+      });
+      if (error){ showLoginError('ثبت‌نام ناموفق بود: ' + (error.message||'')); return; }
+      if (data.session){
+        currentAuthUserId = data.user.id;
+        const { error: insErr } = await insertProfile(data.user.id, name, nationalId, organization, role);
+        if (insErr){ showLoginError('حساب ساخته شد اما تکمیل پروفایل ناموفق بود: ' + (insErr.message||'')); return; }
+        const { error: accessErr } = await saveInitialAccessRequest(organization, role);
+        if (accessErr){ showLoginError('حساب ساخته شد اما ثبت سطح دسترسی ناموفق بود: ' + (accessErr.message||'')); return; }
+        await handleAuthenticatedSession(data.session, { autoOpenApp:true });
+        showToast('ثبت‌نام و درخواست دسترسی با موفقیت انجام شد');
+      } else {
+        showLoginError('یک ایمیل تأیید برای شما ارسال شد. لطفاً پس از تأیید، از تب «ورود» وارد شوید.');
+        renderLoginStage('signin');
+        document.getElementById('loginEmail').value = email;
+      }
+
+    } else if (loginStage === 'complete-profile'){
+      const name = document.getElementById('loginName').value.trim();
+      const nationalId = document.getElementById('loginNationalId').value.trim();
+      const organization = document.getElementById('loginOrganization').value;
+      const role = document.getElementById('loginRole').value;
+      if (!name){ showLoginError('لطفاً نام و نام خانوادگی را وارد کنید.'); return; }
+      if (!isValidNationalId(nationalId)){ showLoginError('شماره ملی واردشده معتبر نیست (باید ۱۰ رقم و صحیح باشد).'); return; }
+      if (!organization){ showLoginError('لطفاً نهاد را انتخاب کنید.'); return; }
+      if (!role){ showLoginError('لطفاً نقش کاربری را انتخاب کنید.'); return; }
+      currentAuthUserId = pendingAuthUser.id;
+      const { data, error } = await insertProfile(pendingAuthUser.id, name, nationalId, organization, role);
+      if (error){ showLoginError('تکمیل پروفایل ناموفق بود: ' + (error.message||'')); return; }
+      const { error: accessErr } = await saveInitialAccessRequest(organization, role);
+      if (accessErr){ showLoginError('پروفایل تکمیل شد اما ثبت سطح دسترسی ناموفق بود: ' + (accessErr.message||'')); return; }
+      await finalizeProfileAccess(data, currentAuthEmail, { autoOpenApp:true });
+      showToast('ثبت‌نام و درخواست دسترسی تکمیل شد');
+    }
+  } catch (e){
+    showLoginError('خطای غیرمنتظره‌ای رخ داد. دوباره تلاش کنید.');
+    console.error(e);
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+
+const REDIRECT_REASON_MESSAGES = {
+  'no-session': 'برای استفاده از این برنامه، ابتدا باید از همین صفحه وارد سامانه شوید.',
+  'no-access': 'دسترسی شما به این برنامه هنوز فعال نشده یا اطلاعات حساب شما ناقص است. لطفاً از داشبورد اقدام کنید.'
+};
+
+async function initAuth(){
+  const params = new URLSearchParams(window.location.search);
+  const reason = params.get('reason');
+  if (reason && REDIRECT_REASON_MESSAGES[reason]){
+    showToast(REDIRECT_REASON_MESSAGES[reason]);
+    history.replaceState(null, '', window.location.pathname);
+  }
+
+  const { data, error } = await sb.auth.getSession();
+  if (error || !data.session){
+    renderLoginStage('signin');
+    showLoginOverlay();
+    return;
+  }
+  await handleAuthenticatedSession(data.session);
+}
+
+document.getElementById('loginTabSignin').addEventListener('click', () => renderLoginStage('signin'));
+document.getElementById('loginTabSignup').addEventListener('click', () => renderLoginStage('signup'));
+document.getElementById('loginSubmitBtn').addEventListener('click', submitLogin);
+document.querySelectorAll('.login-field input').forEach(inp => {
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') submitLogin(); });
+});
+
+// Clears everything the browser holds for this app's origin — localStorage,
+// sessionStorage, Cache Storage entries, and any cookies. Only ever called from
+// performLogout(), after sb.auth.signOut() has already run, so the Supabase
+// client has cleanly torn down its own session first.
+async function clearAllBrowserCache(){
+  try { localStorage.clear(); } catch (e) { console.warn('Could not clear localStorage:', e); }
+  try { sessionStorage.clear(); } catch (e) { console.warn('Could not clear sessionStorage:', e); }
+  try {
+    if ('caches' in window){
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }
+  } catch (e) { console.warn('Could not clear Cache Storage:', e); }
+  try {
+    document.cookie.split(';').forEach(c => {
+      const eqPos = c.indexOf('=');
+      const name = (eqPos > -1 ? c.substr(0, eqPos) : c).trim();
+      if (name) document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    });
+  } catch (e) { console.warn('Could not clear cookies:', e); }
+}
+
+async function performLogout(){
+  await sb.auth.signOut();
+  await clearAllBrowserCache();
+  currentProfile = null; currentAuthEmail = null; currentAuthUserId = null; pendingAuthUser = null;
+  updateUserInfoUI(null);
+  document.getElementById('tabAdminBtn').style.display = 'none';
+  document.getElementById('userManagementBtn').style.display = 'none';
+  document.getElementById('userManagementPanel').classList.remove('show');
+  document.getElementById('adminPanel').classList.remove('show');
+  document.getElementById('dashboardPanel').style.display = '';
+  activatePlatformTab('programs');
+  document.getElementById('loginName').value = '';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginNationalId').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginOrganization').value = '';
+  document.getElementById('loginRole').value = '';
+  clearLoginError();
+  renderLoginStage('signin');
+  showLoginOverlay();
+}
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  if (!confirm('از سامانه خارج می‌شوید؟')) return;
+  await performLogout();
+});
+document.getElementById('loginStatusLogoutBtn').addEventListener('click', performLogout);
+
+/* ---------------- Dashboard ---------------- */
+function levelOf(role){ return ROLE_LEVELS[role] || 0; }
+
+async function loadDashboard(){
+  const { data: programs, error: progErr } = await sb.from('plat_assessments')
+    .select('key,title,description,icon,is_active,sort_order')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true });
+  if (progErr){
+    document.getElementById('programGrid').innerHTML =
+      '<div class="modal-empty">بارگذاری فهرست برنامه‌ها ناموفق بود.</div>';
+    return;
+  }
+  programsCache = programs || [];
+
+  const { data: access, error: accErr } = await sb.from('plat_access')
+    .select('id,assessment_key,role,status').eq('user_id', currentAuthUserId);
+  accessCache = {};
+  if (!accErr && access){
+    access.forEach(row => { accessCache[row.assessment_key] = row; });
+  }
+
+  renderProgramGrid();
+  await refreshAdminButton();
+}
+
+function renderProgramGrid(){
+  const grid = document.getElementById('programGrid');
+  if (programsCache.length === 0){
+    grid.innerHTML = '<div class="modal-empty">هنوز برنامه‌ای در سامانه ثبت نشده است.</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  programsCache.forEach(p => {
+    const access = accessCache[p.key];
+    const chip = PROGRAM_CHIP[p.key] || '#1c5c42';
+    const card = document.createElement('div');
+    card.className = 'program-card';
+    card.style.setProperty('--chip', chip);
+
+    let statusHtml, actionsHtml;
+    if (!access){
+      statusHtml = '<span class="status-pill none">بدون دسترسی</span>';
+      actionsHtml = `<button class="btn btn-primary btn-sm" data-action="request">درخواست دسترسی</button>`;
+    } else if (access.status === 'pending'){
+      statusHtml = `<span class="status-pill pending">⏳ در انتظار تأیید (${access.role})</span>`;
+      actionsHtml = '';
+    } else if (access.status === 'rejected'){
+      statusHtml = `<span class="status-pill rejected">⛔ درخواست رد شده</span>`;
+      actionsHtml = `<button class="btn btn-ghost btn-sm" data-action="request">ثبت درخواست مجدد</button>`;
+    } else {
+      statusHtml = `<span class="status-pill active">✅ ${access.role} (سطح ${levelOf(access.role)})</span>`;
+      actionsHtml = `<button class="btn btn-primary btn-sm" data-action="enter">ورود به ارزیابی</button>`;
+    }
+
+    card.innerHTML = `
+      <div class="program-head">
+        <div class="program-icon">${p.icon}</div>
+        <div>
+          <div class="program-title">${p.title}</div>
+          <div class="program-desc">${p.description}</div>
+        </div>
+      </div>
+      <div class="program-status">${statusHtml}</div>
+      <div class="program-actions">${actionsHtml}</div>
+    `;
+    const reqBtn = card.querySelector('[data-action="request"]');
+    if (reqBtn) reqBtn.onclick = () => openRequestModal(p);
+    const enterBtn = card.querySelector('[data-action="enter"]');
+    if (enterBtn) {
+      enterBtn.onclick = async () => {
+        const route = appRouteForKey(p.key);
+        if (route) {
+          await navigateToAssessmentApp(p.key);
+          return;
+        }
+        showToast(`«${p.title}» هنوز به این پلتفرم منتقل نشده — به‌زودی اضافه می‌شود.`);
+      };
+    }
+    grid.appendChild(card);
+  });
+}
+
+/* ---------------- Request access modal ---------------- */
+function openRequestModal(program){
+  requestModalKey = program.key;
+  document.getElementById('requestModalTitle').textContent = `درخواست دسترسی — ${program.title}`;
+  document.getElementById('requestError').style.display = 'none';
+  document.querySelector('input[name="requestRole"][value="ارزیاب"]').checked = true;
+  updateRoleOptionHighlight();
+  document.getElementById('requestModalOverlay').classList.add('show');
+}
+function closeRequestModal(){
+  document.getElementById('requestModalOverlay').classList.remove('show');
+  requestModalKey = null;
+}
+function updateRoleOptionHighlight(){
+  document.querySelectorAll('.role-option').forEach(opt => {
+    const input = opt.querySelector('input');
+    opt.classList.toggle('is-checked', input.checked);
+  });
+}
+document.querySelectorAll('input[name="requestRole"]').forEach(inp => {
+  inp.addEventListener('change', updateRoleOptionHighlight);
+});
+document.getElementById('requestModalCloseBtn').addEventListener('click', closeRequestModal);
+document.getElementById('requestModalOverlay').addEventListener('click', e => {
+  if (e.target.id === 'requestModalOverlay') closeRequestModal();
+});
+
+document.getElementById('requestSubmitBtn').addEventListener('click', async () => {
+  if (!requestModalKey) return;
+  const errEl = document.getElementById('requestError');
+  const btn = document.getElementById('requestSubmitBtn');
+  const role = document.querySelector('input[name="requestRole"]:checked').value;
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  try {
+    const existing = accessCache[requestModalKey];
+    let error;
+    if (existing){
+      // Re-requesting (e.g. after rejection) — update the existing row's role, which re-arms
+      // the pending gate server-side regardless of what we send here.
+      ({ error } = await sb.from('plat_access').update({ role }).eq('id', existing.id));
+    } else {
+      ({ error } = await sb.from('plat_access').insert({ assessment_key: requestModalKey, role }));
+    }
+    if (error){ errEl.textContent = 'خطا: ' + (error.message || 'ثبت درخواست ناموفق بود.'); errEl.style.display = ''; return; }
+    showToast('درخواست شما ثبت شد');
+    closeRequestModal();
+    await loadDashboard();
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+/* ---------------- Global admin approvals across all programs ---------------- */
+async function refreshAdminButton(){
+  const { data: globalAdmin, error: adminError } = await sb.rpc('plat_is_global_admin');
+  isGlobalAdmin = !adminError && globalAdmin === true;
+  adminProgramKeys = isGlobalAdmin ? programsCache.filter(p => p.is_active !== false).map(p => p.key) : [];
+  document.getElementById('tabAdminBtn').style.display = isGlobalAdmin ? '' : 'none';
+  document.getElementById('userManagementBtn').style.display = isGlobalAdmin ? '' : 'none';
+  if (currentProfile && currentAuthEmail) updateUserInfoUI(currentProfile, currentAuthEmail);
+}
+
+async function loadApprovalsList(){
+  const wrap = document.getElementById('approvalsList');
+  wrap.innerHTML = '<div class="modal-empty">در حال بارگذاری…</div>';
+
+  if (!isGlobalAdmin) await refreshAdminButton();
+  if (!isGlobalAdmin){
+    wrap.innerHTML = '<div class="modal-empty">این بخش فقط برای مدیر کل سامانه در دسترس است.</div>';
+    return;
+  }
+  const keys = adminProgramKeys;
+
+  const { data: pending, error: pendErr } = await sb.from('plat_access')
+    .select('id,assessment_key,role,requester_name,requester_email,requester_national_id,created_at')
+    .in('assessment_key', keys).eq('status','pending').order('created_at', { ascending: true });
+  if (pendErr){ wrap.innerHTML = '<div class="modal-empty">خطا در بارگذاری درخواست‌ها.</div>'; return; }
+  if (!pending || pending.length === 0){ wrap.innerHTML = '<div class="modal-empty">درخواست در انتظار تأییدی وجود ندارد.</div>'; return; }
+
+  const byProgram = {};
+  pending.forEach(row => { (byProgram[row.assessment_key] = byProgram[row.assessment_key] || []).push(row); });
+
+  wrap.innerHTML = '';
+  Object.keys(byProgram).forEach(key => {
+    const program = programsCache.find(p => p.key === key);
+    const group = document.createElement('div');
+    group.className = 'approval-group';
+    group.innerHTML = `<h4>${program ? program.icon + ' ' + program.title : key}</h4>`;
+    byProgram[key].forEach(row => {
+      const item = document.createElement('div');
+      item.className = 'approval-item';
+      item.innerHTML = `
+        <div class="ai-meta"><b>${escapeHtml(row.requester_name || '—')}</b> — ${escapeHtml(row.role)}<br>${escapeHtml(row.requester_email||'')}${row.requester_national_id ? ' — کد ملی: '+escapeHtml(row.requester_national_id) : ''}</div>
+        <div class="ai-actions"><button class="ai-approve">تأیید</button><button class="ai-reject">رد</button></div>
+      `;
+      item.querySelector('.ai-approve').onclick = () => reviewAccess(row.id, 'active');
+      item.querySelector('.ai-reject').onclick = () => reviewAccess(row.id, 'rejected');
+      group.appendChild(item);
+    });
+    wrap.appendChild(group);
+  });
+}
+async function reviewAccess(accessId, decision){
+  const { error } = await sb.rpc('plat_review_access', { p_access_id: accessId, p_decision: decision });
+  if (error){ showToast('خطا: ' + (error.message||'عملیات ناموفق بود')); return; }
+  showToast(decision === 'active' ? 'درخواست تأیید شد' : 'درخواست رد شد');
+  loadApprovalsList();
+}
+
+const tabProgramsBtn = document.getElementById('tabProgramsBtn');
+const tabAdminBtn = document.getElementById('tabAdminBtn');
+
+function activatePlatformTab(tab){
+  const isAdmin = tab === 'admin';
+  document.getElementById('userManagementPanel').classList.remove('show');
+  tabProgramsBtn.classList.toggle('is-active', !isAdmin);
+  tabAdminBtn.classList.toggle('is-active', isAdmin);
+  document.getElementById('dashboardPanel').style.display = isAdmin ? 'none' : '';
+  document.getElementById('adminPanel').classList.toggle('show', isAdmin);
+  if (isAdmin) loadApprovalsList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+tabProgramsBtn.addEventListener('click', () => activatePlatformTab('programs'));
+tabAdminBtn.addEventListener('click', () => activatePlatformTab('admin'));
+
+/* ---------------- User management ---------------- */
+function roleLabel(role){ return role === 'admin' ? 'مدیر کل' : (role || '—'); }
+function programTitle(key){
+  const p = programsCache.find(x => x.key === key);
+  return p ? p.title : key;
+}
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+}
+function showUserManagement(){
+  document.getElementById('dashboardPanel').style.display = 'none';
+  document.getElementById('adminPanel').classList.remove('show');
+  document.getElementById('userManagementPanel').classList.add('show');
+  loadManagedUsers();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function hideUserManagement(){
+  document.getElementById('userManagementPanel').classList.remove('show');
+  activatePlatformTab(tabAdminBtn.classList.contains('is-active') ? 'admin' : 'programs');
+}
+async function loadManagedUsers(){
+  const wrap = document.getElementById('userManagementList');
+  const err = document.getElementById('userManagementError');
+  err.style.display = 'none';
+  wrap.innerHTML = '<div class="modal-empty">در حال بارگذاری کاربران…</div>';
+
+  if (!adminProgramKeys.length){
+    await refreshAdminButton();
+  }
+  if (!adminProgramKeys.length){
+    wrap.innerHTML = '<div class="modal-empty">این بخش فقط برای مدیر کل سامانه در دسترس است.</div>';
+    return;
+  }
+
+  const [{ data: users, error: usersErr }, { data: access, error: accessErr }] = await Promise.all([
+    sb.rpc('plat_admin_list_users'),
+    sb.from('plat_access')
+      .select('id,user_id,assessment_key,role,status')
+      .in('assessment_key', adminProgramKeys)
+  ]);
+
+  if (usersErr || accessErr){
+    err.textContent = 'بارگذاری کاربران ناموفق بود: ' + ((usersErr || accessErr).message || 'خطای نامشخص');
+    err.style.display = '';
+    wrap.innerHTML = '';
+    return;
+  }
+  managedUsersCache = users || [];
+  managedAccessCache = access || [];
+  renderManagedUsers();
+}
+function renderManagedUsers(){
+  const wrap = document.getElementById('userManagementList');
+  const q = document.getElementById('userSearchInput').value.trim().toLowerCase();
+  const users = managedUsersCache.filter(u => {
+    if (!q) return true;
+    return [u.name,u.email,u.organization,u.requested_role].some(v => String(v||'').toLowerCase().includes(q));
+  });
+  if (!users.length){
+    wrap.innerHTML = '<div class="modal-empty">کاربری با این جستجو پیدا نشد.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  users.forEach(u => {
+    const self = u.id === currentAuthUserId;
+    const card = document.createElement('div');
+    card.className = 'user-card' + (self ? ' is-self' : '');
+    const availablePrograms = adminProgramKeys.map(key => `<option value="${escapeHtml(key)}">${escapeHtml(programTitle(key))}</option>`).join('');
+    const accesses = managedAccessCache.filter(a => a.user_id === u.id && adminProgramKeys.includes(a.assessment_key));
+    const accessText = accesses.length
+      ? accesses.map(a => `${escapeHtml(programTitle(a.assessment_key))}: <b>${escapeHtml(roleLabel(a.role))}</b> — ${a.status === 'active' ? 'فعال' : a.status === 'pending' ? 'در انتظار' : 'رد شده'}`).join('<br>')
+      : 'برای برنامه‌های تحت مدیریت شما دسترسی ثبت نشده است.';
+
+    card.innerHTML = `
+      <div class="user-identity">
+        <div class="user-name">${escapeHtml(u.name || 'بدون نام')}${self ? ' (شما)' : ''}</div>
+        <div class="user-meta">${escapeHtml(u.email || '')}${u.organization ? ' — '+escapeHtml(u.organization) : ''}</div>
+        <div class="access-summary">${accessText}</div>
+      </div>
+      <div class="user-control">
+        <label>برنامه</label>
+        <select data-field="program">${availablePrograms}</select>
+      </div>
+      <div class="user-control">
+        <label>نقش</label>
+        <select data-field="role">
+          <option value="ارزیاب">ارزیاب</option>
+          <option value="کارشناس">کارشناس</option>
+        </select>
+      </div>
+      <div class="user-actions">
+        <button class="btn btn-primary btn-sm" data-action="grant" ${self ? 'disabled' : ''}>اعطای دسترسی</button>
+        <button class="btn btn-ghost btn-sm" data-action="revoke" ${self ? 'disabled' : ''}>لغو دسترسی</button>
+      </div>`;
+
+    const programSelect = card.querySelector('[data-field="program"]');
+    const roleSelect = card.querySelector('[data-field="role"]');
+    function syncRole(){
+      const existing = managedAccessCache.find(a => a.user_id === u.id && a.assessment_key === programSelect.value);
+      if (existing) roleSelect.value = existing.role === 'admin' ? 'کارشناس' : existing.role;
+    }
+    programSelect.addEventListener('change', syncRole);
+    syncRole();
+    card.querySelector('[data-action="grant"]').onclick = () => setManagedAccess(u, programSelect.value, roleSelect.value, 'active');
+    card.querySelector('[data-action="revoke"]').onclick = () => setManagedAccess(u, programSelect.value, roleSelect.value, 'rejected');
+    wrap.appendChild(card);
+  });
+}
+async function setManagedAccess(user, assessmentKey, role, status){
+  const action = status === 'active' ? 'اعطای دسترسی' : 'لغو دسترسی';
+  if (!confirm(`${action} برای «${user.name || user.email}» در «${programTitle(assessmentKey)}» انجام شود؟`)) return;
+  const { error } = await sb.rpc('plat_admin_set_access', {
+    p_user_id: user.id,
+    p_assessment_key: assessmentKey,
+    p_role: role,
+    p_status: status
+  });
+  if (error){
+    showToast('خطا: ' + (error.message || 'عملیات ناموفق بود'));
+    return;
+  }
+  showToast(status === 'active' ? 'دسترسی کاربر فعال شد' : 'دسترسی کاربر لغو شد');
+  await loadManagedUsers();
+  await loadApprovalsList();
+}
+document.getElementById('userManagementBtn').addEventListener('click', showUserManagement);
+document.getElementById('backToDashboardBtn').addEventListener('click', hideUserManagement);
+document.getElementById('refreshUsersBtn').addEventListener('click', loadManagedUsers);
+document.getElementById('userSearchInput').addEventListener('input', renderManagedUsers);
+
+/* ---------------- Boot ---------------- */
+initAuth();
+</script>
+</body>
+</html>
